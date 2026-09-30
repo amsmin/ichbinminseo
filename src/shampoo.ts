@@ -1,4 +1,5 @@
 import { FilesetResolver, ImageSegmenter, type NormalizedLandmark } from '@mediapipe/tasks-vision'
+import { assetUrl } from './asset-url'
 
 type Point = { x: number; y: number }
 type WorkerHand = Point & { hand: 'left' | 'right'; pose: 'pinch' | 'open' }
@@ -246,7 +247,7 @@ export class ShampooScene {
       const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm')
       if (!this.active || generation !== this.generation) return
       const created = await ImageSegmenter.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: '/models/selfie_segmenter.tflite', delegate: 'CPU' },
+        baseOptions: { modelAssetPath: assetUrl('/models/selfie_segmenter.tflite'), delegate: 'CPU' },
         runningMode: 'VIDEO',
         outputConfidenceMasks: true,
         outputCategoryMask: false,

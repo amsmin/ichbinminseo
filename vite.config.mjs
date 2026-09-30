@@ -6,6 +6,11 @@ import { defineConfig } from 'vite'
 const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig(({ command }) => ({
+  // GitHub Pages serves this repository below /ichbinminseo/. Keep local
+  // development at the domain root while making production URLs portable.
+  base: command === 'build' && process.env.GITHUB_REPOSITORY
+    ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/`
+    : '/',
   server: command === 'serve'
     ? {
         host: '0.0.0.0',

@@ -9,7 +9,13 @@ import { RumblingArrival, ARRIVAL_REVEAL_START, ARRIVAL_END } from './rumbling-a
 import { RumblingTrail } from './rumbling-trail'
 import { landscape } from './rumbling-landscape'
 import { ErenConversation } from './rumbling-dialogue'
+import { assetUrl } from './asset-url'
 import './rumbling.css'
+
+document.documentElement.style.setProperty('--rumbling-font', `url("${assetUrl('/fonts/Pretendard-Bold.woff2')}")`)
+document.documentElement.style.setProperty('--rumbling-dialogue-bubble', `url("${assetUrl('/eren-dialogue-bubble.svg')}")`)
+document.documentElement.style.setProperty('--rumbling-nameplate', `url("${assetUrl('/eren-nameplate.svg')}")`)
+document.documentElement.style.setProperty('--rumbling-continue', `url("${assetUrl('/eren-dialogue-continue.svg')}")`)
 
 const R = 50
 const WALK_SPEED = 2.4 // Heavy walking, ~3.7× faster without changing world scale.

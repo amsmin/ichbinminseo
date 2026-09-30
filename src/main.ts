@@ -1,6 +1,7 @@
 import './style.css'
 import { ShampooScene } from './shampoo'
 import { GlassesScene } from './glasses'
+import { assetUrl } from './asset-url'
 import type { ForestScene } from './forest'
 import type { RumblingScene } from './rumbling'
 import {
@@ -1287,7 +1288,7 @@ class ShiroScene {
 }
 
 // Replace this path with any image you add under /public when customizing the lemons.
-const LEMON_IMAGE = '/lemons/lemon-user.png'
+const LEMON_IMAGE = assetUrl('/lemons/lemon-user.png')
 const DETECTION_INTERVAL = 1000 / 15
 const WATER_DETECTION_INTERVAL = 1000 / 20
 const FACE_DETECTION_INTERVAL = 1000 / 10
@@ -1333,8 +1334,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </div>
     <div id="shiro-scene" class="shiro-scene" aria-hidden="true">
       <div class="shiro-dog">
-        <img class="shiro-walk-image" src="/shiro-sprites.png" alt="" draggable="false" />
-        <img class="shiro-belly-image" src="/shiro-belly.png" alt="" draggable="false" />
+        <img class="shiro-walk-image" src="${assetUrl('/shiro-sprites.png')}" alt="" draggable="false" />
+        <img class="shiro-belly-image" src="${assetUrl('/shiro-belly.png')}" alt="" draggable="false" />
       </div>
       <div class="shiro-bone" aria-hidden="true"></div>
     </div>
@@ -1377,7 +1378,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </div>
 
     <div id="cup" class="glass-cup" aria-label="Lemonade glass">
-            <img class="cup-image" src="/cup2.png" alt="" draggable="false" />
+            <img class="cup-image" src="${assetUrl('/cup2.png')}" alt="" draggable="false" />
       <div class="cup-glow"></div>
       <div class="cup-liquid"><span class="liquid-shine"></span></div>
       <div class="ice ice-one"></div>
@@ -1405,6 +1406,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <canvas id="capture-canvas" hidden></canvas>
   </main>
 `
+
+document.querySelector<HTMLImageElement>('.impine-note')!.src = assetUrl('/%22%E1%84%82%E1%85%A1%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%8C%E1%85%A1%20%E1%84%80%E1%85%AB%E1%86%AB%E1%84%8C%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%A1..%22.png')
+document.documentElement.style.setProperty('--impine-window-background', `url("${assetUrl('/구식 webcam 프로그램 배경.png')}")`)
 
 const video = document.querySelector<HTMLVideoElement>('#camera-video')!
 const waterCanvas = document.querySelector<HTMLCanvasElement>('#water-canvas')!
@@ -2385,13 +2389,13 @@ async function loadHandTracker(generation: number) {
     let created: HandLandmarker
     try {
       created = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: '/models/hand_landmarker.task', delegate: 'GPU' },
+        baseOptions: { modelAssetPath: assetUrl('/models/hand_landmarker.task'), delegate: 'GPU' },
         runningMode: 'VIDEO', numHands: 2, minHandDetectionConfidence: 0.55,
         minHandPresenceConfidence: 0.55, minTrackingConfidence: 0.55,
       })
     } catch {
       created = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: '/models/hand_landmarker.task', delegate: 'CPU' },
+        baseOptions: { modelAssetPath: assetUrl('/models/hand_landmarker.task'), delegate: 'CPU' },
         runningMode: 'VIDEO', numHands: 2, minHandDetectionConfidence: 0.55,
         minHandPresenceConfidence: 0.55, minTrackingConfidence: 0.55,
       })
@@ -2418,13 +2422,13 @@ async function loadFaceTracker(generation: number) {
     let created: FaceLandmarker
     try {
       created = await FaceLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: '/models/face_landmarker.task', delegate: 'GPU' },
+        baseOptions: { modelAssetPath: assetUrl('/models/face_landmarker.task'), delegate: 'GPU' },
         runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes, minFaceDetectionConfidence: 0.5,
         minFacePresenceConfidence: 0.5, minTrackingConfidence: 0.5,
       })
     } catch {
       created = await FaceLandmarker.createFromOptions(vision, {
-        baseOptions: { modelAssetPath: '/models/face_landmarker.task', delegate: 'CPU' },
+        baseOptions: { modelAssetPath: assetUrl('/models/face_landmarker.task'), delegate: 'CPU' },
         runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes, minFaceDetectionConfidence: 0.5,
         minFacePresenceConfidence: 0.5, minTrackingConfidence: 0.5,
       })
@@ -2935,8 +2939,8 @@ class ImpineRenderer {
     this.stage = stage
     this.context = context
     // The public filename is stored as decomposed Korean Unicode on macOS.
-    this.subtitleImage.src = '/%E1%84%8C%E1%85%A1%E1%84%86%E1%85%A1%E1%86%A8.png'
-    this.effectImage.src = '/%E1%84%92%E1%85%AD%E1%84%80%E1%85%AA.png'
+    this.subtitleImage.src = assetUrl('/%E1%84%8C%E1%85%A1%E1%84%86%E1%85%A1%E1%86%A8.png')
+    this.effectImage.src = assetUrl('/%E1%84%92%E1%85%AD%E1%84%80%E1%85%AA.png')
   }
 
   get isComplete() {

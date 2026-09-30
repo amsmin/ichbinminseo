@@ -1,6 +1,7 @@
 import { PoseLandmarker, HandLandmarker, FaceLandmarker } from '@mediapipe/tasks-vision'
 import type { BodyFrame } from './minecraft-tracking3d'
 import { createVisionTask } from './minecraft-vision-runtime'
+import { assetUrl } from './asset-url'
 
 type Mode = 'hand' | 'head'
 let disposed = false, configuration = 0
@@ -27,14 +28,14 @@ async function configure(mode: Mode) {
       handSetup ??= (async () => {
         if (disposed) return
         const p = await createVisionTask('pose:init', vision => PoseLandmarker.createFromOptions(vision, {
-          baseOptions: { modelAssetPath: '/models/pose_landmarker_lite.task', delegate: 'CPU' },
+          baseOptions: { modelAssetPath: assetUrl('/models/pose_landmarker_lite.task'), delegate: 'CPU' },
           canvas: new OffscreenCanvas(1,1), runningMode: 'VIDEO', numPoses: 1, outputSegmentationMasks: false,
           minPoseDetectionConfidence: .5, minPosePresenceConfidence: .5, minTrackingConfidence: .55,
         }), enterStage)
         if (disposed) { p.close(); return }
         pose = p
         const h = await createVisionTask('hand:init', vision => HandLandmarker.createFromOptions(vision, {
-          baseOptions: { modelAssetPath: '/models/hand_landmarker.task', delegate: 'CPU' },
+          baseOptions: { modelAssetPath: assetUrl('/models/hand_landmarker.task'), delegate: 'CPU' },
           canvas: new OffscreenCanvas(1,1), runningMode: 'VIDEO', numHands: 2,
           minHandDetectionConfidence: .5, minHandPresenceConfidence: .5, minTrackingConfidence: .55,
         }), enterStage)
@@ -46,7 +47,7 @@ async function configure(mode: Mode) {
       headSetup ??= (async () => {
         if (disposed) return
         const f = await createVisionTask('face:init', vision => FaceLandmarker.createFromOptions(vision, {
-          baseOptions: { modelAssetPath: '/models/face_landmarker.task', delegate: 'CPU' },
+          baseOptions: { modelAssetPath: assetUrl('/models/face_landmarker.task'), delegate: 'CPU' },
           canvas: new OffscreenCanvas(1,1), runningMode: 'VIDEO', numFaces: 1,
           outputFaceBlendshapes: false, minFaceDetectionConfidence: .5,
           minFacePresenceConfidence: .5, minTrackingConfidence: .55,

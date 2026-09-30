@@ -2,10 +2,11 @@ import './minecraft.css'
 import { MINECRAFT_HUD } from './minecraft-hud'
 import { MinecraftEquipment } from './minecraft-equipment'
 import { hotbarSelectionMarkup, mountHotbarSelection } from './minecraft-selection'
+import { assetUrl } from './asset-url'
 
 // Keep the supplied file untouched. SVG clips display its existing pixels in
 // two independent screen-space windows, without redrawing any HUD artwork.
-export const MINECRAFT_OVERLAY_URL = '/hotbar2.png'
+export const MINECRAFT_OVERLAY_URL = assetUrl('/hotbar2.png')
 
 function hudWindow(part: 'crosshair' | 'hotbar', label: string) {
   const { viewBox, clip } = MINECRAFT_HUD[part]

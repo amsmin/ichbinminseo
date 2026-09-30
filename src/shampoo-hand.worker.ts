@@ -1,4 +1,5 @@
 import { FilesetResolver, HandLandmarker, type NormalizedLandmark } from '@mediapipe/tasks-vision'
+import { assetUrl } from './asset-url'
 
 type WorkerHand = {
   hand: 'left' | 'right'
@@ -32,7 +33,7 @@ async function initialize() {
     const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm', true)
     if (disposed) return
     const created = await HandLandmarker.createFromOptions(vision, {
-      baseOptions: { modelAssetPath: '/models/hand_landmarker.task', delegate: 'CPU' },
+      baseOptions: { modelAssetPath: assetUrl('/models/hand_landmarker.task'), delegate: 'CPU' },
       canvas: typeof OffscreenCanvas === 'undefined' ? undefined : new OffscreenCanvas(1, 1),
       runningMode: 'VIDEO',
       numHands: 2,

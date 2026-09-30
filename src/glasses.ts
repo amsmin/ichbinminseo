@@ -1,4 +1,5 @@
 import type { FaceLandmarkerResult, HandLandmarkerResult, NormalizedLandmark } from '@mediapipe/tasks-vision'
+import { assetUrl } from './asset-url'
 
 type Point = { x: number; y: number }
 type GlassesPose = Point & { span: number; angle: number }
@@ -106,7 +107,7 @@ export class GlassesScene {
     this.video = video
     this.glassesImage = new Image()
     this.glassesImage.decoding = 'async'
-    this.glassesImage.src = '/glasses-silver.png'
+    this.glassesImage.src = assetUrl('/glasses-silver.png')
   }
 
   get hasFace() {

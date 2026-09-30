@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { createGearModel, type GearSlot } from './minecraft-models'
 import { GEAR_FOV, smoothGear, type GearTransform } from './minecraft-tracking3d'
 import { EquipmentGrip } from './minecraft-grip'
+import { assetUrl } from './asset-url'
 
 const BONES = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20]]
 
@@ -60,7 +61,7 @@ export class MinecraftGearStage {
   select(slot: GearSlot) {
     this.hide()
     if (slot === 5 && !this.helmetTexture) {
-      this.helmetTexture = new THREE.TextureLoader().load('/minecraft-equipment/helmet.png',undefined,undefined,() => {
+      this.helmetTexture = new THREE.TextureLoader().load(assetUrl('/minecraft-equipment/helmet.png'),undefined,undefined,() => {
         const helmet=this.models.get(5)
         if (helmet) {
           const material=helmet.material as THREE.MeshStandardMaterial

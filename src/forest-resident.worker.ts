@@ -1,6 +1,7 @@
 import { FaceLandmarker, FilesetResolver, ImageClassifier, ImageSegmenter, InteractiveSegmenter, PoseLandmarker } from '@mediapipe/tasks-vision'
 import type { ResidentAnalysis, ResidentWorkerInput, ResidentWorkerOutput } from './forest-resident.types'
 import { recognizeResident } from './forest-recognition'
+import { assetUrl } from './asset-url'
 
 let human: ImageSegmenter
 let pose: PoseLandmarker
@@ -15,23 +16,23 @@ async function initialize() {
   send({ type:'progress', message:'주민 만들기를 준비하고 있어요…' })
   const files = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm', true)
   human = await ImageSegmenter.createFromOptions(files, {
-    baseOptions:{modelAssetPath:'/models/selfie_segmenter.tflite', delegate:'CPU'},
+    baseOptions:{modelAssetPath:assetUrl('/models/selfie_segmenter.tflite'), delegate:'CPU'},
     canvas:new OffscreenCanvas(1,1), runningMode:'IMAGE', outputConfidenceMasks:true, outputCategoryMask:false,
   })
   pose = await PoseLandmarker.createFromOptions(files, {
-    baseOptions:{modelAssetPath:'/models/pose_landmarker_lite.task', delegate:'CPU'},
+    baseOptions:{modelAssetPath:assetUrl('/models/pose_landmarker_lite.task'), delegate:'CPU'},
     canvas:new OffscreenCanvas(1,1), runningMode:'IMAGE', numPoses:1,
     minPoseDetectionConfidence:.4, minPosePresenceConfidence:.4,
   })
   face = await FaceLandmarker.createFromOptions(files, {
-    baseOptions:{modelAssetPath:'/models/face_landmarker.task', delegate:'CPU'},
+    baseOptions:{modelAssetPath:assetUrl('/models/face_landmarker.task'), delegate:'CPU'},
     canvas:new OffscreenCanvas(1,1), runningMode:'IMAGE', numFaces:1,
   })
   object = await InteractiveSegmenter.createFromOptions(files, {
-    baseOptions:{modelAssetPath:'/models/interactive_segmentation.task', delegate:'CPU'},
+    baseOptions:{modelAssetPath:assetUrl('/models/interactive_segmentation.task'), delegate:'CPU'},
   })
   classifier = await ImageClassifier.createFromOptions(files, {
-    baseOptions:{modelAssetPath:'/models/efficientnet_lite0.tflite',delegate:'CPU'},
+    baseOptions:{modelAssetPath:assetUrl('/models/efficientnet_lite0.tflite'),delegate:'CPU'},
     canvas:new OffscreenCanvas(1,1),runningMode:'IMAGE',maxResults:12,
   })
   send({type:'ready'})

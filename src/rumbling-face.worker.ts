@@ -1,4 +1,5 @@
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision'
+import { assetUrl } from './asset-url'
 
 // One inference on the captured still, never a continuous camera inference loop.
 self.onmessage = async (event: MessageEvent<ImageBitmap>) => {
@@ -7,7 +8,7 @@ self.onmessage = async (event: MessageEvent<ImageBitmap>) => {
   try {
     const files = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm', true)
     detector = await FaceLandmarker.createFromOptions(files, {
-      baseOptions: { modelAssetPath: '/models/face_landmarker.task', delegate: 'CPU' },
+      baseOptions: { modelAssetPath: assetUrl('/models/face_landmarker.task'), delegate: 'CPU' },
       canvas: new OffscreenCanvas(1, 1), runningMode: 'IMAGE', numFaces: 1,
     })
     const points = detector.detect(photo).faceLandmarks[0]
