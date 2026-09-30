@@ -1,0 +1,58 @@
+.rumbling-root { position:absolute; inset:0; z-index:2; overflow:hidden; background:#287fc1; color:#f2f8ff; }
+.rumbling-root[hidden] { display:none; }
+.rumbling-view { position:absolute; inset:0; touch-action:none; }
+.rumbling-view canvas { display:block; width:100%; height:100%; cursor:grab; }
+.rumbling-view canvas:active { cursor:grabbing; }
+.is-rumbling .experience-header { pointer-events:none; top:100px; text-shadow:0 2px 16px #03285480; }
+.is-rumbling .experience-header h1 { color:#f6fbff; font-family:inherit; font-size:clamp(32px,4vw,58px); font-weight:800; letter-spacing:-.06em; }
+.is-rumbling .experience-header p,.is-rumbling .eyebrow { color:#e2f2ff; }
+.is-rumbling .experience-switcher { max-width:calc(100vw - 32px); overflow-x:auto; }
+.is-rumbling .bottom-ui,.is-rumbling .hand-guide,.is-rumbling .camera-status,.is-rumbling .glass-cup,.is-rumbling .lemon-layer,.is-rumbling .juice-layer,.is-rumbling .sip-layer { display:none; }
+.rumbling-caption { position:absolute; left:clamp(24px,5vw,80px); bottom:35px; pointer-events:none; text-shadow:0 1px 8px #06316ebf; }
+.rumbling-caption small { font-size:9px; letter-spacing:.23em; color:#e3f3ff; }
+.rumbling-caption h2 { margin:9px 0; font-size:23px; letter-spacing:-.06em; }
+.rumbling-caption p { margin:0 0 8px; font-size:12px; }
+.rumbling-caption span { font-size:10px; color:#e3f3ff; }
+.rumbling-tools { position:absolute; right:clamp(24px,5vw,80px); bottom:35px; text-align:right; }
+.rumbling-tools p { font-size:11px; color:#f2f8ff; text-shadow:0 1px 8px #06316ebf; }
+.rumbling-tools button { cursor:pointer; border:1px solid #ffffffbd; background:#f7faf7c9; color:#425c60; border-radius:30px; padding:12px 22px; font:inherit; font-size:12px; box-shadow:0 5px 20px #344c5010; }
+.rumbling-tools button:focus-visible { outline:2px solid #527e87; outline-offset:4px; }
+.rumbling-start { position:absolute; left:50%; bottom:34px; transform:translateX(-50%); border:1px solid #f4e6cc80; border-radius:32px; padding:17px 30px; background:#292a2be8; color:#fff2de; box-shadow:0 8px 30px #071a3540; font:inherit; font-weight:700; cursor:pointer; }
+.rumbling-start:disabled { cursor:wait; opacity:.65; }
+.rumbling-flash { position:absolute; inset:0; z-index:6; pointer-events:none; background:#ecf6ff; opacity:0; }
+@font-face { font-family:"Eren Pretendard"; src:url('/fonts/Pretendard-Bold.woff2') format('woff2'); font-style:normal; font-weight:700; font-display:swap; }
+.eren-dialogue { position:absolute; z-index:8; left:50%; bottom:clamp(20px,6vh,48px); box-sizing:border-box; width:min(66vw,960px); min-height:min(clamp(144px,18.5vw,250px),38svh); max-height:38svh; padding:clamp(24px,2.8vw,38px) clamp(30px,4.8vw,68px) clamp(28px,3vw,42px); border:0; border-radius:0; background:transparent url('/eren-dialogue-bubble.svg') center / 100% 100% no-repeat; color:#68624b; cursor:pointer; text-align:left; font-family:"Eren Pretendard",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; font-weight:700; -webkit-font-smoothing:antialiased; transform:translate(-50%,18px); opacity:0; pointer-events:none; transition:transform .28s ease,opacity .28s ease; }
+.eren-dialogue[hidden] { display:none; }
+.eren-dialogue.is-visible { transform:translate(-50%,0); opacity:1; pointer-events:auto; }
+.eren-name { position:absolute; display:grid; place-items:center; left:3%; top:clamp(-18px,-1.4vw,-10px); width:clamp(66px,9vw,125px); height:clamp(30px,4vw,53px); background:transparent url('/eren-nameplate.svg') center / 100% 100% no-repeat; color:#756126; transform:rotate(-8deg); font-size:clamp(14px,1.7vw,23px); line-height:1; letter-spacing:0; }
+.eren-line { display:block; max-height:calc(38svh - clamp(24px,2.8vw,38px) - clamp(28px,3vw,42px)); overflow:auto; font-size:clamp(18px,2.8vw,34px); line-height:1.55; letter-spacing:0; word-break:keep-all; overflow-wrap:anywhere; }
+.eren-continue { position:absolute; left:50%; bottom:1%; transform:translateX(-50%); width:clamp(16px,2.3vw,30px); height:clamp(11px,1.55vw,21px); background:transparent url('/eren-dialogue-continue.svg') center / contain no-repeat; }
+.eren-dialogue:focus-visible { outline:3px solid #d9ad63; outline-offset:5px; }
+.rumbling-root.is-conversing .rumbling-caption,.rumbling-root.is-conversing .rumbling-tools,.rumbling-root.is-conversing .rumbling-start { visibility:hidden; }
+.is-rumbling:has(.is-conversing) .experience-header { visibility:hidden; }
+@media(max-width:600px) and (orientation:portrait) { .eren-dialogue { width:calc(100% - 32px); min-height:min(150px,38svh); padding:26px 28px 30px; bottom:24px; } .eren-name { left:4%; top:-12px; } .eren-line { max-height:calc(38svh - 56px); font-size:clamp(18px,4.8vw,25px); } }
+@media(prefers-reduced-motion:reduce) { .eren-dialogue { transition:opacity .18s; } }
+.rumbling-camera { width:min(680px,calc(100vw - 32px)); max-height:90svh; overflow:auto; border:1px solid #ffffff40; border-radius:24px; padding:24px; background:#172633; color:#edf5fc; box-shadow:0 25px 100px #0008; }
+.rumbling-camera::backdrop { background:#051320b8; }
+.rumbling-camera header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.rumbling-camera small { font-size:10px; letter-spacing:.2em; color:#bfbcac; }
+.rumbling-camera h2 { margin:9px 0 20px; font-size:23px; }
+.rumbling-camera button { cursor:pointer; font:inherit; }
+.titan-close { align-self:flex-start; border:0; background:transparent; color:white; font-size:28px!important; }
+.titan-camera-view { position:relative; aspect-ratio:16/9; overflow:hidden; border-radius:16px; background:#0c151d; }
+.titan-camera-view video { display:block; width:100%; height:100%; object-fit:contain; transform:scaleX(-1); }
+.titan-face-guide { position:absolute; top:15%; left:50%; transform:translateX(-50%); width:var(--face-width,25.1%); height:62%; border:2px dashed #f1e2bf; border-radius:50%; box-shadow:0 0 0 600px #06122250; pointer-events:none; }
+.titan-eye-guide { position:absolute; width:20%; height:9%; transform:translate(-50%,-50%); border:1.5px solid #73ffe1; border-radius:50%; background:#62c9b824; box-shadow:0 0 9px #62c9b880; }
+.titan-eye-guide::after { content:""; position:absolute; left:50%; top:50%; width:3px; height:3px; border-radius:50%; transform:translate(-50%,-50%); background:#a0ffeb; }
+.rumbling-camera p { font-size:12px; line-height:1.7; color:#c2d1df; }
+.titan-camera-status { min-height:22px; color:#efcf99!important; }
+.titan-upload { display:grid; gap:10px; padding:14px; border:1px dashed #718496; border-radius:12px; font-size:13px; }
+.titan-upload[hidden] { display:none; }
+.titan-upload span { font-size:11px; color:#b5c8d7; }
+.titan-shoot { width:100%; padding:15px; border:0; border-radius:24px; background:#e4d3b2; color:#252a2e; font-weight:700!important; }
+.titan-shoot:disabled { opacity:.4; cursor:not-allowed; }
+.titan-reconnect { width:100%; padding:11px; margin-bottom:10px; border:1px solid #8296a6; border-radius:24px; color:#dfebf5; background:transparent; }
+.titan-reconnect:disabled { opacity:.45; cursor:wait; }
+.rumbling-start:focus-visible,.rumbling-camera button:focus-visible { outline:2px solid #f3dcae; outline-offset:4px; }
+@media(max-width:850px) { .rumbling-start { bottom:135px; padding:13px 24px; } }
+@media(max-width:600px) { .is-rumbling .experience-header { top:115px; } .rumbling-caption { left:22px; bottom:30px; } .rumbling-caption p { max-width:180px; line-height:1.7; } .rumbling-tools { right:20px; bottom:32px; } .rumbling-tools p { max-width:120px; line-height:1.7; } }

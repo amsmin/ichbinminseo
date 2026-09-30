@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none">
+  <defs>
+    <radialGradient id="cream" cx=".48" cy=".44" r=".72">
+      <stop offset="0" stop-color="#fffde9"/>
+      <stop offset="1" stop-color="#fffbe4"/>
+    </radialGradient>
+  </defs>
+  <path fill="url(#cream)" d="M112 20C220 5 355 10 496 10C668 8 803 9 892 21C961 31 989 66 991 113C993 149 972 166 966 187C961 204 978 224 963 246C944 277 890 285 815 287C620 291 407 290 211 287C133 286 71 286 45 265C20 245 27 219 34 198C38 184 30 173 20 156C-1 119 11 85 39 58C59 39 80 28 112 20Z"/>
+</svg>

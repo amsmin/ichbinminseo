@@ -1,0 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+
+:root { color: #fffdf5; background: #d2edca; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; min-width: 320px; height: 100%; min-height: 100svh; margin: 0; overflow: hidden; }
+button { font: inherit; }
+
+.lemonade-app { position: relative; isolation: isolate; width: 100%; height: 100%; min-height: 100svh; overflow: hidden; background: #a8d696; }
+.camera-video, .water-canvas, .rubber-canvas, .shampoo-canvas, .glasses-canvas, .ripple-canvas, .balloon-canvas, .camera-fallback, .camera-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.camera-video { z-index: -4; display: block; object-fit: cover; transform: scaleX(-1); filter: saturate(.86) contrast(.94) brightness(.86); }
+.lemonade-app:not(.is-watertouch):not(.is-balloon):not(.is-shiro):not(.is-impine) .camera-video { filter: none; }
+.impine-stage { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(92vw, 72vh); aspect-ratio: 1; overflow: hidden; border: 1px solid rgba(255,255,255,.38); border-radius: 3px; background: #8b8883; box-shadow: 0 22px 60px rgba(16,26,26,.24); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -50%); transition: opacity .2s ease, visibility 0s linear .2s; }
+.impine-canvas { display: block; width: 100%; height: 100%; }
+.impine-window { background-image: url('/구식 webcam 프로그램 배경.png'); }
+.impine-window { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(94vw, 108vh, 1120px); aspect-ratio: 1.4; overflow: visible; background-color: #1b1b1b; background-image: none; background-repeat: no-repeat; background-position: center; background-size: 100% 100%; opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -50%); transition: opacity .12s linear, visibility 0s linear .12s; }
+.impine-console { position: absolute; z-index: 3; top: 50%; left: 50%; width: min(92vw, 72vh); aspect-ratio: 1; color: #a7a7a7; font-family: Monaco, "Courier New", monospace; font-size: 10px; letter-spacing: .04em; opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -50%); transition: opacity .2s ease, visibility 0s linear .2s; }
+.impine-info, .impine-state { position: absolute; right: 0; left: 0; display: flex; justify-content: space-between; }
+.impine-info { top: -20px; }
+.impine-state { bottom: -20px; }
+.camera-video.is-water-source { opacity: 0; }
+.water-canvas { z-index: -3; display: block; opacity: 0; pointer-events: none; filter: saturate(.86) contrast(.94) brightness(.86); transition: opacity .22s ease; }
+.water-canvas.is-ready { opacity: 1; }
+.rubber-canvas { z-index: -3; display: block; opacity: 0; pointer-events: none; }
+.rubber-canvas.is-ready { opacity: 1; }
+.shampoo-canvas { z-index: -3; display: block; opacity: 0; pointer-events: none; }
+.lemonade-app.is-shampoo .shampoo-canvas.is-ready { opacity: 1; }
+.glasses-canvas { z-index: -3; display: block; opacity: 0; pointer-events: none; }
+.lemonade-app.is-glasses .glasses-canvas.is-ready { opacity: 1; }
+.ripple-canvas { z-index: 1; display: block; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.balloon-canvas { z-index: 3; display: block; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.shiro-scene { position: absolute; inset: 0; z-index: 3; overflow: hidden; visibility: hidden; opacity: 0; pointer-events: none; transition: opacity .2s ease, visibility 0s linear .2s; }
+.shiro-dog { position: absolute; top: 0; left: 0; z-index: 1; overflow: hidden; transform-origin: 50% 100%; will-change: transform; contain: layout paint style; }
+.shiro-dog img { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.shiro-walk-image { opacity: 1; filter: drop-shadow(0 12px 12px rgba(9,27,30,.28)); transition: opacity .14s ease; }
+.shiro-belly-image { right: -9%; bottom: -1%; width: 118%; height: auto; opacity: 0; filter: drop-shadow(0 14px 16px rgba(9,27,30,.32)); transition: opacity .14s ease; }
+.shiro-dog.is-belly { overflow: visible; }
+.shiro-dog.is-belly .shiro-walk-image { opacity: 0; }
+.shiro-dog.is-belly .shiro-belly-image { opacity: 1; animation: shiro-roll-in .42s cubic-bezier(.2,.85,.25,1.2) both; }
+.shiro-dog.is-biting .shiro-walk-image { transform-origin: 19% 48%; animation: shiro-bite .22s ease-in-out infinite alternate; }
+.shiro-bone { position: absolute; top: 0; left: 0; z-index: 2; width: 52px; height: 18px; border: 1px solid rgba(116,85,53,.42); border-radius: 7px; background: linear-gradient(180deg,#fff5dc,#e7cca1); box-shadow: 0 5px 9px rgba(24,18,12,.24), inset 0 1px rgba(255,255,255,.7); opacity: 0; will-change: transform, opacity; }
+.shiro-bone::before, .shiro-bone::after { position: absolute; top: -6px; width: 14px; height: 14px; border: 1px solid rgba(116,85,53,.38); border-radius: 50%; background: #f2ddb9; box-shadow: 0 11px 0 -1px #f2ddb9; content: ''; }
+.shiro-bone::before { left: -8px; }
+.shiro-bone::after { right: -8px; }
+.shiro-bone.is-visible { opacity: 1; }
+@keyframes shiro-roll-in { from { transform: rotate(-13deg) scale(.72); } to { transform: rotate(0) scale(1); } }
+@keyframes shiro-bite { from { transform: rotate(-2deg) translateY(0); } to { transform: rotate(5deg) translateY(3px); } }
+.camera-fallback { z-index: -5; background: radial-gradient(circle at 25% 25%, rgba(255,255,255,.25), transparent 30%), linear-gradient(145deg, #b9dfaa 0%, #75b982 52%, #468d73 100%); }
+.camera-shade { z-index: -2; background: linear-gradient(180deg, rgba(20,58,38,.42), rgba(20,58,38,.03) 28%, rgba(18,54,38,.14) 66%, rgba(5,28,28,.55)), radial-gradient(ellipse at 50% 44%, transparent 25%, rgba(7,34,31,.18)); pointer-events: none; }
+.lemonade-app:not(.is-watertouch):not(.is-balloon):not(.is-shiro):not(.is-impine) .camera-shade { background: none; }
+
+.experience-header { position: absolute; z-index: 4; top: clamp(25px, 6vh, 68px); left: clamp(22px, 6vw, 92px); text-align: left; text-shadow: 0 2px 20px rgba(21,60,38,.24); }
+.eyebrow { display: flex; align-items: center; gap: 8px; color: rgba(255,253,245,.86); font-size: 10px; font-weight: 600; letter-spacing: .21em; }
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: #fff3a5; box-shadow: 0 0 14px #fff3a5; }
+.experience-header h1 { margin: 9px 0 4px; color: #fffdf5; font-family: 'Playfair Display', Georgia, serif; font-size: clamp(38px, 5.3vw, 78px); font-weight: 500; letter-spacing: -.045em; line-height: .98; }
+.experience-header p { max-width: 280px; margin: 0; color: rgba(255,253,245,.77); font-size: clamp(11px, 1.1vw, 14px); letter-spacing: .015em; }
+.experience-switcher { position: absolute; z-index: 12; top: clamp(24px, 5vh, 54px); right: clamp(18px, 4vw, 56px); display: flex; gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,.24); border-radius: 99px; background: rgba(10,42,34,.26); box-shadow: 0 8px 28px rgba(8,39,32,.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.experience-option { padding: 8px 12px; border: 0; border-radius: 99px; background: transparent; color: rgba(255,253,245,.68); font-size: 10px; font-weight: 600; letter-spacing: .03em; cursor: pointer; transition: color .2s ease, background .2s ease, box-shadow .2s ease; }
+.experience-option.is-active { background: rgba(255,255,255,.91); color: #20513e; box-shadow: 0 3px 12px rgba(8,42,32,.16); }
+.experience-option:focus-visible { outline: 2px solid #fff3a5; outline-offset: 2px; }
+
+.lemonade-app.is-watertouch { background: #315f71; }
+.lemonade-app.is-watertouch .camera-shade { background: linear-gradient(180deg, rgba(5,35,56,.32), rgba(11,84,110,.04) 34%, rgba(2,43,66,.12) 68%, rgba(2,20,39,.48)), radial-gradient(ellipse at 50% 44%, transparent 22%, rgba(0,31,58,.2)); }
+.lemonade-app.is-watertouch .eyebrow-dot { background: #9feeff; box-shadow: 0 0 14px #9feeff; }
+.lemonade-app.is-watertouch .ripple-canvas { opacity: 1; }
+.lemonade-app.is-watertouch .lemon-layer, .lemonade-app.is-watertouch .juice-layer, .lemonade-app.is-watertouch .sip-layer, .lemonade-app.is-watertouch .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-watertouch .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(5,55,78,.3); }
+.lemonade-app.is-watertouch .cup-meter { display: none; }
+
+.lemonade-app.is-rubber { background: #a8d696; }
+.lemonade-app.is-rubber .camera-video { opacity: 1; }
+.lemonade-app.is-rubber .rubber-canvas { opacity: 0; }
+.lemonade-app.is-rubber .rubber-canvas.is-ready { opacity: 1; }
+.lemonade-app.is-rubber .eyebrow-dot { background: #ffd9ad; box-shadow: 0 0 14px #ffd9ad; }
+.lemonade-app.is-rubber .lemon-layer, .lemonade-app.is-rubber .juice-layer, .lemonade-app.is-rubber .sip-layer, .lemonade-app.is-rubber .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-rubber .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(47,63,44,.28); }
+.lemonade-app.is-rubber .cup-meter { display: none; }
+.lemonade-app.is-shampoo { background: #a8d4d8; }
+.lemonade-app.is-shampoo .eyebrow-dot { background: #d9f8ff; box-shadow: 0 0 14px #d9f8ff; }
+.lemonade-app.is-shampoo .guide-icon { color: #d9f8ff; }
+.lemonade-app.is-shampoo .lemon-layer, .lemonade-app.is-shampoo .juice-layer, .lemonade-app.is-shampoo .sip-layer, .lemonade-app.is-shampoo .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-shampoo .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(29,65,71,.29); }
+.lemonade-app.is-shampoo .cup-meter { display: none; }
+.lemonade-app.is-glasses { background: #b9c8b9; }
+.lemonade-app.is-glasses .eyebrow-dot { background: #f4d597; box-shadow: 0 0 14px #f4d597; }
+.lemonade-app.is-glasses .guide-icon { color: #f4d597; }
+.lemonade-app.is-glasses .lemon-layer, .lemonade-app.is-glasses .juice-layer, .lemonade-app.is-glasses .sip-layer, .lemonade-app.is-glasses .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-glasses .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(36,49,46,.32); }
+.lemonade-app.is-glasses .cup-meter { display: none; }
+.shampoo-lever { --lever-pull: 0px; position: absolute; z-index: 8; top: clamp(132px, 19vh, 188px); right: clamp(18px, 4vw, 56px); width: 92px; height: 174px; padding: 0; border: 1px solid rgba(223,251,255,.72); border-radius: 22px; background: linear-gradient(145deg, rgba(35,105,118,.54), rgba(18,70,85,.48)); box-shadow: 0 12px 30px rgba(8,43,55,.24), inset 0 1px rgba(255,255,255,.35); color: #ecfcff; visibility: hidden; opacity: 0; pointer-events: none; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: opacity .2s ease, visibility .2s ease; }
+.lemonade-app.is-shampoo .shampoo-lever { visibility: visible; opacity: 1; pointer-events: auto; }
+.shampoo-lever.is-dragging { cursor: grabbing; }
+.shampoo-lever:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.shampoo-lever-title, .shampoo-lever-hint { position: absolute; right: 0; left: 0; display: block; text-align: center; font-size: 9px; font-weight: 600; letter-spacing: .15em; pointer-events: none; }
+.shampoo-lever-title { top: 14px; }
+.shampoo-lever-hint { bottom: 11px; color: rgba(235,252,255,.8); }
+.shampoo-lever-track { position: absolute; top: 40px; left: 50%; width: 12px; height: 94px; border: 1px solid rgba(225,251,255,.65); border-radius: 99px; background: linear-gradient(90deg, rgba(12,54,69,.8), rgba(45,113,131,.8)); box-shadow: inset 1px 1px 4px rgba(0,20,32,.42); transform: translateX(-50%); pointer-events: none; }
+.shampoo-lever-handle { position: absolute; top: -2px; left: 50%; display: flex; align-items: center; justify-content: center; gap: 4px; width: 52px; height: 32px; border: 1px solid rgba(255,255,255,.93); border-radius: 13px; background: linear-gradient(180deg, #fff, #c6e8ed 48%, #93c6d1); box-shadow: 0 4px 12px rgba(0,37,54,.35), inset 0 2px 1px rgba(255,255,255,.9); transform: translate(-50%, var(--lever-pull)); transition: transform .32s cubic-bezier(.2,.9,.2,1); pointer-events: none; }
+.shampoo-lever.is-dragging .shampoo-lever-handle { transition: none; }
+.shampoo-lever-handle span { display: block; width: 2px; height: 12px; border-radius: 2px; background: rgba(35,103,118,.48); }
+.shampoo-lever.is-pulled .shampoo-lever-track { box-shadow: inset 1px 1px 4px rgba(0,20,32,.42), 0 0 18px rgba(202,249,255,.45); }
+.lemonade-app.is-watertouch .camera-button { border-color: rgba(190,245,255,.96); box-shadow: 0 0 0 1px rgba(116,221,244,.18), 0 6px 30px rgba(0,42,65,.32); }
+.lemonade-app.is-watertouch .camera-button-inner { background: rgba(219,250,255,.96); }
+
+.lemonade-app.is-balloon { background: #9bb9c2; }
+.lemonade-app.is-balloon .camera-shade { background: linear-gradient(180deg, rgba(38,45,72,.35), rgba(27,52,67,.02) 34%, rgba(30,38,57,.12) 70%, rgba(16,22,39,.5)), radial-gradient(ellipse at 50% 45%, transparent 24%, rgba(25,29,53,.14)); }
+.lemonade-app.is-balloon .eyebrow-dot { background: #ffb4d1; box-shadow: 0 0 14px #ffb4d1; }
+.lemonade-app.is-balloon .balloon-canvas { opacity: 1; }
+.lemonade-app.is-balloon .lemon-layer, .lemonade-app.is-balloon .juice-layer, .lemonade-app.is-balloon .sip-layer, .lemonade-app.is-balloon .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-balloon .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(31,37,67,.3); }
+.lemonade-app.is-balloon .cup-meter { display: none; }
+
+.lemonade-app.is-shiro { background: #9aafa8; }
+.lemonade-app.is-shiro .camera-shade { background: linear-gradient(180deg, rgba(22,42,42,.34), rgba(22,42,42,.02) 35%, rgba(17,37,36,.08) 70%, rgba(9,25,25,.43)); }
+.lemonade-app.is-shiro .eyebrow-dot { background: #dffcff; box-shadow: 0 0 14px #dffcff; }
+.lemonade-app.is-shiro .experience-header h1 { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 500; }
+.lemonade-app.is-shiro .shiro-scene { visibility: visible; opacity: 1; transition-delay: 0s; }
+.lemonade-app.is-shiro .lemon-layer, .lemonade-app.is-shiro .juice-layer, .lemonade-app.is-shiro .sip-layer, .lemonade-app.is-shiro .glass-cup { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-shiro .hand-guide { bottom: clamp(132px, 16vh, 164px); background: rgba(24,47,45,.31); }
+.lemonade-app.is-shiro .cup-meter { display: none; }
+
+.lemonade-app.is-impine { background: #181818; }
+.lemonade-app.is-impine .impine-stage { opacity: 1; visibility: visible; pointer-events: none; border-color: #777; border-radius: 0; box-shadow: none; transition-delay: 0s; }
+.lemonade-app.is-impine .impine-console { opacity: 1; visibility: visible; transition-delay: 0s; }
+.lemonade-app.is-impine .camera-fallback { background: #181818; }
+.lemonade-app.is-impine .camera-video { opacity: 0; }
+.lemonade-app.is-impine .camera-shade { background: #181818; }
+.lemonade-app.is-impine .experience-header { top: 18px; left: 18px; text-shadow: none; }
+.lemonade-app.is-impine .eyebrow { color: #999; font-family: Monaco, "Courier New", monospace; font-size: 10px; letter-spacing: .04em; }
+.lemonade-app.is-impine .eyebrow-dot { width: 5px; height: 5px; border-radius: 0; background: #888; box-shadow: none; }
+.lemonade-app.is-impine .experience-header h1 { margin: 5px 0 3px; color: #d0d0d0; font-family: Tahoma, Arial, sans-serif; font-size: 18px; font-weight: 400; letter-spacing: 0; line-height: 1.1; }
+.lemonade-app.is-impine .experience-header p { color: #888; font-family: Tahoma, Arial, sans-serif; font-size: 11px; letter-spacing: 0; }
+.lemonade-app.is-impine .experience-switcher { top: 14px; right: 16px; gap: 0; padding: 2px; border: 1px solid #505050; border-radius: 0; background: #242424; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.lemonade-app.is-impine .experience-option { border-radius: 0; color: #999; font-family: Tahoma, Arial, sans-serif; font-size: 10px; font-weight: 400; }
+.lemonade-app.is-impine .experience-option.is-active { background: #666; color: #f1f1f1; box-shadow: none; }
+.lemonade-app.is-impine .lemon-layer, .lemonade-app.is-impine .juice-layer, .lemonade-app.is-impine .sip-layer, .lemonade-app.is-impine .glass-cup, .lemonade-app.is-impine .hand-guide { visibility: hidden; opacity: 0; pointer-events: none; }
+.lemonade-app.is-impine .bottom-ui { bottom: max(18px,env(safe-area-inset-bottom)); }
+.lemonade-app.is-impine .capture-hint { margin-top: 8px; color: #999; font-family: Monaco, "Courier New", monospace; font-size: 10px; text-transform: uppercase; }
+.lemonade-app.is-impine .camera-button { width: 72px; height: 72px; border: 3px solid #c2c2c2; border-radius: 50%; background: #555; box-shadow: 0 0 0 4px #2a2a2a; }
+.lemonade-app.is-impine .camera-button-inner { inset: 8px; border: 2px solid #252525; background: #c9c9c9; }
+.lemonade-app.is-impine .camera-button.is-pressed { transform: scale(.96); }
+.lemonade-app.is-impine .camera-button.is-pressed .camera-button-inner { background: #aaa; }
+.lemonade-app.is-impine .camera-status { top: 18px; right: 18px; padding: 5px 7px; border: 1px solid #666; border-radius: 0; background: #242424; color: #c5c5c5; font-family: Monaco, "Courier New", monospace; font-size: 10px; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.lemonade-app.is-impine .impine-window { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+.lemonade-app.is-impine .impine-window { background-image: url('/구식 webcam 프로그램 배경.png'); }
+.lemonade-app.is-impine .experience-header, .lemonade-app.is-impine .experience-switcher { display: none; }
+.impine-window .impine-stage { top: 13.8%; left: 24.55%; width: 50.85%; border: 0; border-radius: 0; background: transparent; box-shadow: none; transform: none; }
+.impine-window .impine-console { top: 13.8%; left: 24.55%; width: 50.85%; transform: none; }
+.impine-window .impine-info { display: none; }
+.impine-note { position: absolute; top: 9.5%; left: 4%; width: clamp(130px, 24%, 332px); height: auto; }
+.impine-window-controls { position: absolute; top: 1.3%; right: 1.4%; z-index: 5; display: flex; gap: 7px; }
+.impine-window-button { display: grid; width: clamp(28px, 2.6vw, 36px); aspect-ratio: 1.18; place-items: center; padding: 0; border: 1px solid transparent; background: transparent; color: transparent; cursor: pointer; transition: background-color .08s linear, transform .08s linear; }
+.impine-window-button:hover { border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.08); }
+.impine-window-button:active { transform: translateY(1px); }
+.impine-close-button:hover { border-color: rgba(255,90,90,.55); background: rgba(165,34,34,.38); }
+.impine-window-button:focus-visible { outline: 1px dotted #ccc; outline-offset: 1px; }
+.impine-minimized-label { display: none; }
+.lemonade-app.is-impine .bottom-ui { bottom: calc(50% - min(94vw, 108vh, 1120px) / 1.4 * .436 - 52.5px); }
+.lemonade-app.is-impine .camera-button { position: relative; z-index: 6; width: 105px; height: 105px; border: 0; border-radius: 50%; background: transparent; box-shadow: none; filter: none; }
+.lemonade-app.is-impine .camera-button-inner { display: none; }
+.lemonade-app.is-impine .camera-button:hover { filter: brightness(1.08); }
+.lemonade-app.is-impine .camera-button:active, .lemonade-app.is-impine .camera-button.is-pressed { filter: brightness(.84); transform: translateY(1px); }
+.lemonade-app.is-impine .capture-hint { margin-top: 2px; }
+.lemonade-app.is-impine.is-impine-minimized .impine-window { top: auto; right: auto; bottom: 18px; left: 14px; width: 220px; height: 28px; aspect-ratio: auto; border: 1px solid #666; background: #252525; transform: none; cursor: pointer; }
+.lemonade-app.is-impine.is-impine-minimized .impine-window > *:not(.impine-minimized-label) { display: none; }
+.lemonade-app.is-impine.is-impine-minimized .impine-minimized-label { display: block; padding: 6px 9px; color: #c4c4c4; font-family: Tahoma, Arial, sans-serif; font-size: 11px; }
+.lemonade-app.is-impine.is-impine-minimized .bottom-ui { display: none; }
+.lemonade-app.is-impine.is-impine-maximized .impine-window { width: min(100vw, 140vh, 1400px); }
+.lemonade-app.is-impine.is-impine-maximized .bottom-ui { bottom: calc(50% - min(100vw, 140vh, 1400px) / 1.4 * .436 - 52.5px); }
+
+.lemon-layer, .juice-layer, .sip-layer { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
+.lemon-orb { position: absolute; will-change: left, top, transform, opacity; filter: drop-shadow(0 13px 13px rgba(36,85,44,.2)); transition: filter .25s ease; }
+.lemon-orb img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
+.lemon-halo { position: absolute; inset: 12%; z-index: -1; border-radius: 50%; background: rgba(255,241,116,.22); filter: blur(20px); }
+.lemon-orb.is-held { z-index: 5; filter: drop-shadow(0 18px 17px rgba(33,76,38,.3)); }
+.lemon-orb.is-squeezed { filter: drop-shadow(0 9px 9px rgba(33,76,38,.14)); }
+.juice-drop { position: absolute; width: 8px; height: 14px; margin: -4px 0 0 -4px; border-radius: 60% 60% 70% 70%; background: linear-gradient(150deg, #fff9a8, #f7ce37); box-shadow: 0 0 11px rgba(255,239,95,.85); animation: drop-fall ease-in forwards; }
+@keyframes drop-fall { to { transform: translateY(180px) scale(.48); opacity: 0; } }
+
+.hand-guide { position: absolute; z-index: 7; bottom: clamp(148px,18vh,178px); left: 50%; display: flex; align-items: center; gap: 9px; max-width: min(90vw,370px); padding: 9px 15px 9px 11px; border: 1px solid rgba(255,255,255,.24); border-radius: 99px; background: rgba(22,66,49,.25); color: rgba(255,253,245,.8); font-size: 11px; letter-spacing: .01em; transform: translateX(-50%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); pointer-events: none; }
+.guide-icon { color: #fff3a5; font-size: 15px; }
+
+.glass-cup { --fill: 0; --liquid-height: 13px; --ice-base: 10px; --ice-top: -9px; --hand-x: 50vw; --hand-y: 72vh; position: absolute; z-index: 4; bottom: clamp(104px,12vh,135px); left: 50%; width: clamp(128px,15vw,180px); height: clamp(142px,18vw,205px); border: 0; border-radius: 0; background: transparent; box-shadow: none; transform: translateX(-50%); transition: left .34s cubic-bezier(.22,1,.36,1), top .34s cubic-bezier(.22,1,.36,1), bottom .34s ease; overflow: visible; }
+.glass-cup.is-hand-held { top: var(--hand-y); left: var(--hand-x); bottom: auto; }
+.cup-image { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; object-fit: fill; filter: drop-shadow(0 15px 17px rgba(18,58,43,.28)); pointer-events: none; user-select: none; }
+.cup-glow { position: absolute; z-index: 1; inset: -25% -30% auto; height: 55%; background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%); pointer-events: none; }
+.cup-liquid { position: absolute; right: 17%; bottom: 7%; left: 17%; z-index: 2; height: var(--liquid-height); border-radius: 8px 8px 24px 24px; background: linear-gradient(100deg, rgba(255,221,92,.63), rgba(255,242,144,.48) 48%, rgba(255,192,53,.54)); box-shadow: inset 0 8px 12px rgba(255,255,208,.2); opacity: .78; transition: height .25s ease; }
+.liquid-shine { position: absolute; top: 4px; left: 12%; width: 60%; height: 2px; border-radius: 4px; background: rgba(255,255,255,.68); }
+.ice { position: absolute; z-index: 3; width: 34%; height: 22%; border: 1px solid rgba(255,255,255,.5); border-radius: 6px; background: linear-gradient(140deg, rgba(241,255,255,.65), rgba(190,231,229,.17)); box-shadow: inset 3px 3px rgba(255,255,255,.2); animation: ice-float 3.4s ease-in-out infinite; transform: rotate(12deg); }
+.ice-one { top: 20%; left: 15%; }
+.ice-two { top: 27%; right: 11%; width: 29%; transform: rotate(-18deg); animation-delay: -.9s; }
+.ice-three { top: 39%; left: 36%; width: 28%; transform: rotate(30deg); animation-delay: -1.6s; }
+@keyframes ice-float { 0%,100% { margin-top: var(--ice-base); } 50% { margin-top: var(--ice-top); } }
+.slice { position: absolute; z-index: 4; width: 42px; height: 42px; border: 5px solid rgba(255,248,120,.9); border-radius: 50%; background: repeating-conic-gradient(rgba(255,255,214,.85) 0deg 12deg, rgba(239,190,50,.6) 12deg 19deg); box-shadow: 0 2px 5px rgba(66,96,40,.22); animation: slice-float 4.5s ease-in-out infinite; }
+.slice-one { top: 7%; right: -8px; transform: rotate(24deg); }
+.slice-two { top: 47%; left: -15px; width: 31px; height: 31px; border-width: 4px; transform: rotate(-23deg); animation-delay: -2s; }
+@keyframes slice-float { 0%,100% { margin-top: 0; } 50% { margin-top: -8px; } }
+.cup-rim { display: none; }
+.straw { position: absolute; z-index: 6; top: -111px; left: 57%; width: 9px; height: 122px; border: 1px solid rgba(255,248,181,.9); border-radius: 99px; background: linear-gradient(90deg, #e8a92e, #fff19a 47%, #d88d22); box-shadow: 0 0 12px rgba(255,226,97,.35); opacity: 0; transform: rotate(10deg); transform-origin: 50% 100%; transition: opacity .42s ease, transform .42s cubic-bezier(.22,1,.36,1); }
+.straw::after { position: absolute; top: -6px; left: -2px; width: 11px; height: 12px; border: 2px solid rgba(255,245,166,.92); border-bottom: 0; border-radius: 99px 99px 0 0; content: ''; }
+.straw-tip { position: absolute; right: -1px; bottom: -2px; left: -1px; height: 10px; border-radius: 50%; background: rgba(255,246,156,.9); }
+.glass-cup.has-straw .straw { opacity: 1; transform: rotate(10deg) translateY(-2px); }
+.glass-cup.is-sipping .straw { animation: straw-sip .7s ease-in-out infinite alternate; }
+@keyframes straw-sip { to { transform: rotate(7deg) translateY(-4px); } }
+.cup-label { display: none; }
+
+.sip-particle { position: absolute; width: 9px; height: 9px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff29a; box-shadow: 0 0 13px rgba(255,233,95,.95); animation: sip-travel .72s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes sip-travel { 0% { transform: translate(0, 0) scale(1); opacity: .95; } 78% { opacity: .95; } 100% { transform: translate(var(--sip-x), var(--sip-y)) scale(.16); opacity: 0; } }
+
+.bottom-ui { position: absolute; z-index: 10; bottom: max(19px,env(safe-area-inset-bottom)); left: 50%; display: flex; flex-direction: column; align-items: center; transform: translateX(-50%); }
+.cup-meter { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; color: rgba(255,253,245,.73); font-size: 9px; letter-spacing: .15em; }
+.meter-label { color: rgba(255,253,245,.61); }
+.cup-meter span:last-child { color: #fff4a0; font-weight: 600; }
+.camera-button { position: relative; width: 68px; height: 68px; padding: 0; border: 2px solid rgba(255,255,255,.93); border-radius: 50%; background: transparent; box-shadow: 0 4px 25px rgba(20,54,39,.23); cursor: pointer; touch-action: none; transition: border-color .18s ease, border-radius .18s ease, transform .18s ease; }
+.camera-button-inner { position: absolute; inset: 6px; border-radius: 50%; background: rgba(255,255,255,.93); transition: inset .18s ease, border-radius .18s ease, background .18s ease; }
+.camera-button.is-pressed { transform: scale(.91); }
+.camera-button.is-recording { border-color: #ff635e; border-radius: 18px; }
+.camera-button.is-recording .camera-button-inner { inset: 17px; border-radius: 6px; background: #ff635e; }
+.capture-hint { margin: 10px 0 0; color: rgba(255,253,245,.63); font-size: 10px; letter-spacing: .04em; }
+.camera-status { position: absolute; z-index: 11; top: 24px; right: 24px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.22); border-radius: 99px; background: rgba(25,67,49,.35); color: #fffdf5; font-size: 11px; opacity: 0; transform: translateY(-7px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; backdrop-filter: blur(8px); }
+.camera-status.is-visible { opacity: 1; transform: translateY(0); }
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .experience-header { top: 106px; }
+}
+
+@media (max-width: 600px) {
+  .experience-header { top: 104px; left: 22px; }
+  .experience-header p { max-width: 225px; }
+  .experience-switcher { top: 20px; right: 16px; max-width: calc(100vw - 32px); flex-wrap: wrap; justify-content: flex-end; }
+  .experience-option { padding: 7px 10px; font-size: 9px; }
+  .lemon-orb:nth-child(4) { display: none; }
+  .hand-guide { bottom: 150px; font-size: 10px; }
+  .glass-cup { bottom: 105px; }
+  .camera-status { top: 20px; right: 16px; }
+  .lemonade-app.is-impine .experience-header { top: 76px; }
+  .shampoo-lever { top: 178px; right: 16px; transform: scale(.86); transform-origin: top right; }
+}
+@media (prefers-reduced-motion: reduce) { .ice, .slice, .shiro-belly-image { animation: none; } .juice-drop { animation-duration: 1ms; } }

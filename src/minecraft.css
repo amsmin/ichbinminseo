@@ -1,0 +1,80 @@
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.minecraft-camera {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #151515;
+}
+
+.minecraft-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: block;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.minecraft-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.minecraft-crosshair, .minecraft-hotbar {
+  position: fixed;
+  left: 50%;
+  display: block;
+  height: auto;
+  overflow: hidden;
+}
+
+.minecraft-crosshair {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* Preserve the former crosshair scale, but center independently of the PNG. */
+  width: min(56px, 3.349283vw, 5.951116vh);
+  width: min(56px, 3.349283vw, 5.951116dvh);
+  aspect-ratio: 1;
+}
+
+.minecraft-hotbar {
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  /* Old scale = min(1, viewportWidth/1672, viewportHeight/941).
+     964 source pixels × old scale × .75: exactly 25% smaller. */
+  width: min(723px, 43.241627vw, 76.833157vh);
+  width: min(723px, 43.241627vw, 76.833157dvh);
+  aspect-ratio: 964 / 151;
+}
+
+.minecraft-hud[hidden], .minecraft-error[hidden] { display: none; }
+
+/* Only failures add a notice. The working camera has exactly two layers. */
+.minecraft-error {
+  position: fixed;
+  z-index: 2;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: min(520px, calc(100vw - 32px));
+  margin: 0;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #202020ed;
+  color: #fff;
+  font: 15px/1.6 system-ui, sans-serif;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}

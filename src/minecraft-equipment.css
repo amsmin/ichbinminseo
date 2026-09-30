@@ -1,0 +1,14 @@
+.minecraft-equipment {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 0;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+.minecraft-equipment[hidden] { display: none; }
