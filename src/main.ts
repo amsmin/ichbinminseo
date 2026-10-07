@@ -1362,6 +1362,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <button class="experience-option" type="button" data-experience="minecraft" aria-pressed="false">마인크래프트</button>
     </nav>
 
+    <button id="guestbook-button" class="guestbook-link" type="button">방명록 <span aria-hidden="true">↗</span></button>
+
     <button id="shampoo-lever" class="shampoo-lever" type="button" aria-label="샤워 레버를 아래로 당겨 거품 씻기" aria-hidden="true" tabindex="-1">
       <span class="shampoo-lever-title">SHOWER</span>
       <span class="shampoo-lever-track"><span class="shampoo-lever-handle"><span></span><span></span><span></span></span></span>
@@ -1431,6 +1433,7 @@ const experienceEyebrow = document.querySelector<HTMLDivElement>('#experience-ey
 const experienceTitle = document.querySelector<HTMLHeadingElement>('#experience-title')!
 const experienceCopy = document.querySelector<HTMLParagraphElement>('#experience-copy')!
 const experienceOptions = Array.from(document.querySelectorAll<HTMLButtonElement>('.experience-option'))
+const guestbookButton = document.querySelector<HTMLButtonElement>('#guestbook-button')!
 const lemonLayer = document.querySelector<HTMLDivElement>('#lemon-layer')!
 const juiceLayer = document.querySelector<HTMLDivElement>('#juice-layer')!
 const sipLayer = document.querySelector<HTMLDivElement>('#sip-layer')!
@@ -3505,6 +3508,12 @@ experienceOptions.forEach((option) => {
     }
     if (experience === 'lemonade' || experience === 'watertouch' || experience === 'balloon' || experience === 'shiro' || experience === 'impine' || experience === 'rubber' || experience === 'shampoo' || experience === 'glasses' || experience === 'forest' || experience === 'rumbling') setExperience(experience)
   })
+})
+guestbookButton.addEventListener('click', () => {
+  const url = new URL(window.location.href)
+  url.searchParams.delete('experience')
+  url.searchParams.set('page', 'guestbook')
+  window.location.assign(url.href)
 })
 window.addEventListener('resize', updateCup)
 

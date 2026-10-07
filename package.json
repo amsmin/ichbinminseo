@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
+    "@supabase/supabase-js": "^2.117.2",
     "three": "^0.186.0"
   }
 }

@@ -57,6 +57,10 @@ button { font: inherit; }
 .experience-option { padding: 8px 12px; border: 0; border-radius: 99px; background: transparent; color: rgba(255,253,245,.68); font-size: 10px; font-weight: 600; letter-spacing: .03em; cursor: pointer; transition: color .2s ease, background .2s ease, box-shadow .2s ease; }
 .experience-option.is-active { background: rgba(255,255,255,.91); color: #20513e; box-shadow: 0 3px 12px rgba(8,42,32,.16); }
 .experience-option:focus-visible { outline: 2px solid #fff3a5; outline-offset: 2px; }
+.guestbook-link { position: absolute; z-index: 13; top: clamp(78px, 10vh, 106px); right: clamp(18px, 4vw, 56px); display: inline-flex; align-items: center; gap: 7px; padding: 9px 13px; border: 1px solid rgba(255,255,255,.35); border-radius: 99px; background: rgba(255,255,255,.14); color: rgba(255,253,245,.92); font-size: 11px; font-weight: 600; cursor: pointer; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background .2s ease, transform .2s ease, border-color .2s ease; }
+.guestbook-link span { color: #fff3a5; font-size: 15px; }
+.guestbook-link:hover { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.25); transform: translateY(-2px); }
+.guestbook-link:focus-visible { outline: 2px solid #fff3a5; outline-offset: 3px; }
 
 .lemonade-app.is-watertouch { background: #315f71; }
 .lemonade-app.is-watertouch .camera-shade { background: linear-gradient(180deg, rgba(5,35,56,.32), rgba(11,84,110,.04) 34%, rgba(2,43,66,.12) 68%, rgba(2,20,39,.48)), radial-gradient(ellipse at 50% 44%, transparent 22%, rgba(0,31,58,.2)); }
@@ -228,6 +232,7 @@ button { font: inherit; }
   .experience-header p { max-width: 225px; }
   .experience-switcher { top: 20px; right: 16px; max-width: calc(100vw - 32px); flex-wrap: wrap; justify-content: flex-end; }
   .experience-option { padding: 7px 10px; font-size: 9px; }
+  .guestbook-link { top: 96px; right: 16px; }
   .lemon-orb:nth-child(4) { display: none; }
   .hand-guide { bottom: 150px; font-size: 10px; }
   .glass-cup { bottom: 105px; }

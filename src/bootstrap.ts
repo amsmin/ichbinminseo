@@ -1,8 +1,11 @@
 // Keep the original gallery as the homepage. Only an explicit selection opens
 // the camera-only example without initializing the gallery's ML/WebGL scenes.
 const experience = new URLSearchParams(window.location.search).get('experience')
+const page = new URLSearchParams(window.location.search).get('page')
 
-if (experience === 'minecraft') {
+if (page === 'guestbook') {
+  await import('./guestbook')
+} else if (experience === 'minecraft') {
   const { mountMinecraft } = await import('./minecraft')
   mountMinecraft(document.querySelector<HTMLDivElement>('#app')!)
 } else {
