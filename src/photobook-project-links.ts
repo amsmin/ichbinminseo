@@ -1,5 +1,6 @@
 import { mapQuad, type Quad } from './photobook-geometry'
 import { TEXT_PAGE_FONT } from './photobook-material'
+import { trackEvent } from './analytics'
 
 export const BOOK_PROJECTS = [
   { page: 5, title: 'die Brille', label: '안경', experience: 'glasses' },
@@ -32,6 +33,7 @@ export function mountProjectLinks(stage: HTMLElement, projection: string, curren
     link.hidden = true
     link.addEventListener('click', event => {
       if (currentPage() !== project.page) { event.preventDefault(); return }
+      trackEvent('photobook_project_open', { project: project.experience })
       // Back returns to the word that was selected, without changing the URL.
       history.replaceState({ ...history.state, photobookSpread: project.page }, '')
     })

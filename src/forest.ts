@@ -5,6 +5,7 @@ import { ForestAdmission } from './forest-admission'
 import { animateResident, buildResident as buildSilhouetteResident, type ResidentModel } from './forest-resident'
 import { buildSculptedResident } from './forest-sculpture'
 import type { ResidentAnalysis } from './forest-resident.types'
+import { trackEvent } from './analytics'
 import './forest.css'
 
 type Obstacle = { x:number; z:number; radius:number }
@@ -62,6 +63,7 @@ export class ForestScene {
     this.root.querySelector('.forest-move-in')!.addEventListener('click',()=>{
       if(!this.active||this.arrival)return
       this.keys.clear()
+      trackEvent('forest_admission_open')
       this.admission.open(this.nextResidentId)
     })
     this.root.querySelector('.forest-reset')!.addEventListener('click',()=>{if(!this.arrival)this.resetView()})
@@ -254,6 +256,7 @@ export class ForestScene {
     const model=buildResident(data,name)
     const resident:Resident={id:this.nextResidentId++,name,data,x:spawn.x,z:spawn.z,angle:this.controls.getAzimuthalAngle(),model}
     this.residents.push(resident);this.selected=resident;this.keys.clear();this.jumpVelocity=0
+    trackEvent('forest_resident_created')
     const forward=this.camera.getWorldDirection(new THREE.Vector3())
     const up=new THREE.Vector3(0,1,0).applyQuaternion(this.camera.quaternion)
     const from=this.camera.position.clone().addScaledVector(forward,9).addScaledVector(up,-model.height*1.6*.5)
@@ -284,6 +287,7 @@ export class ForestScene {
         if(this.arrival)return
         if(this.selected?.model){this.selected.model.group.position.y=this.ground;animateResident(this.selected.model,0,false)}
         this.selected=resident;this.keys.clear();this.jumpVelocity=0
+        trackEvent('forest_resident_select')
         this.root.querySelector('.forest-greeting')!.textContent=`${resident.name}님과 산책 중`
         this.updateResidents()
       })

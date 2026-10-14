@@ -3,6 +3,7 @@ import { MINECRAFT_HUD } from './minecraft-hud'
 import { MinecraftEquipment } from './minecraft-equipment'
 import { hotbarSelectionMarkup, mountHotbarSelection } from './minecraft-selection'
 import { assetUrl } from './asset-url'
+import { startExperimentSession } from './analytics'
 
 // Keep the supplied file untouched. SVG clips display its existing pixels in
 // two independent screen-space windows, without redrawing any HUD artwork.
@@ -18,6 +19,8 @@ function hudWindow(part: 'crosshair' | 'hotbar', label: string) {
 }
 
 export function mountMinecraft(root: HTMLElement) {
+  const minecraftSession = startExperimentSession('minecraft')
+  window.addEventListener('pagehide', () => minecraftSession.end('pagehide'), { once: true })
   document.title = '마인크래프트 · Experiment 17'
   root.innerHTML = `
     <main class="minecraft-camera" aria-label="마인크래프트 카메라">
@@ -133,6 +136,7 @@ export function mountMinecraft(root: HTMLElement) {
   void startCamera()
 
   return () => {
+    minecraftSession.end('unmount')
     disposed = true
     stopCamera()
     equipment.dispose()

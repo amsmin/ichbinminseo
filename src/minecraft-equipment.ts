@@ -2,6 +2,7 @@ import './minecraft-equipment.css'
 import { hotbarKey, type HotbarSlot } from './minecraft-selection'
 import { MinecraftGearStage } from './minecraft-gear-stage'
 import { twoHandTransform, helmetTransform, type BodyFrame, type GearTransform } from './minecraft-tracking3d'
+import { trackEvent } from './analytics'
 
 type Mode = 'hand' | 'head'
 type TrackingMessage = { type: 'ready'; mode: Mode } | { type: 'status'; stage: string }
@@ -73,6 +74,7 @@ export class MinecraftEquipment {
 
   private select(slot: HotbarSlot) {
     if (this.slot === slot && (!hasGear(slot) || this.stage && this.workerReady)) return
+    trackEvent('minecraft_slot_select', { slot })
     this.slot = slot
     this.selection++
     this.busy = false

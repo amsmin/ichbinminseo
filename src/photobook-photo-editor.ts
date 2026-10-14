@@ -1,6 +1,7 @@
 import './photobook-photo-editor.css'
 import { mapQuad, type Quad } from './photobook-geometry'
 import { clampFlower, FLOWER_STORAGE_KEY, FLOWER_URL, FLOWER_WIDTH_RATIO, photoLayout, type FlowerPosition } from './photobook-photo'
+import { trackEvent } from './analytics'
 
 export function mountPhotoEditor(options: {
   photo: HTMLImageElement
@@ -193,6 +194,7 @@ export function mountPhotoEditor(options: {
   }
   async function open() {
     if (active || !options.canOpen()) return
+    trackEvent('photobook_photo_edit_start')
     active = busy = true
     done.checked = false
     done.disabled = false
@@ -236,6 +238,7 @@ export function mountPhotoEditor(options: {
     rig.style.transform = ''
     dialog.close()
     active = busy = false
+    trackEvent('photobook_photo_edit_complete', { has_flower: Boolean(position) })
     updateAvailability()
     hotspot.focus({ preventScroll: true })
   }

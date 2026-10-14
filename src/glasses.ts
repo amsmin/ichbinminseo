@@ -1,5 +1,6 @@
 import type { FaceLandmarkerResult, HandLandmarkerResult, NormalizedLandmark } from '@mediapipe/tasks-vision'
 import { assetUrl } from './asset-url'
+import { trackEvent } from './analytics'
 
 type Point = { x: number; y: number }
 type GlassesPose = Point & { span: number; angle: number }
@@ -241,6 +242,7 @@ export class GlassesScene {
         if (now - this.jawOpenStartedAt >= 100) {
           this.fogAt = now
           this.jawOpenLatched = true
+          trackEvent('glasses_fog')
         }
       }
     } else if (jawOpen < 0.22 || this.mode !== 'held') {
@@ -292,6 +294,7 @@ export class GlassesScene {
               && now - previous.startedAt >= 55 && now - this.bounceAt > 850) {
               this.bounceAt = now
               previous.triggered = true
+              trackEvent('glasses_adjust')
             }
           }
         }
@@ -310,6 +313,7 @@ export class GlassesScene {
         this.jawOpenLatched = false
         this.fogAt = -Infinity
         this.pointingHands.clear()
+        trackEvent('glasses_grab')
       } else if (this.mode === 'held' && this.heldBy === hand) {
         if (!pinch) {
           if (now - this.heldSeenAt > PINCH_RELEASE_GRACE) this.release(now)
@@ -336,6 +340,7 @@ export class GlassesScene {
   private release(now: number) {
     if (this.mode !== 'held' || !this.pose) return
     this.mode = 'flying'
+    trackEvent('glasses_throw')
     this.heldBy = null
     this.jawOpenStartedAt = 0
     this.jawOpenLatched = false

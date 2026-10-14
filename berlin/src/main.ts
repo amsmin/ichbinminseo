@@ -1,4 +1,8 @@
 import './style.css'
+import { startExperimentSession, trackEvent } from '../../src/analytics'
+
+const berlinSession = startExperimentSession('berlin')
+window.addEventListener('pagehide', () => berlinSession.end('pagehide'), { once: true })
 
 const PASSWORD = 'willkommen'
 const transitionSound = new Audio(new URL('../public/a.mp3', import.meta.url).href)
@@ -154,6 +158,8 @@ const playTransitionSound = () => {
 
 const checkPassword = () => {
   if (password.toLowerCase() === PASSWORD) {
+    trackEvent('berlin_password_success')
+    trackEvent('berlin_practice_start')
     playTransitionSound()
     prepareNextPageTransition()
   }
@@ -289,10 +295,17 @@ function renderPracticePage() {
       return
     }
 
+    trackEvent('berlin_sentence_complete', {
+      station: stationIndex + 1,
+      sentence: sentenceIndex + 1,
+    })
+
     if (sentenceIndex < getCurrentStation().sentences.length - 1) {
       sentenceIndex += 1
     } else {
+      trackEvent('berlin_station_complete', { station: stationIndex + 1 })
       if (stationIndex === practiceStations.length - 1) {
+        trackEvent('berlin_complete')
         return
       }
 
@@ -331,6 +344,7 @@ function renderPracticePage() {
   })
 
   audioButton.addEventListener('click', () => {
+    if (getCurrentSentence().audio) trackEvent('berlin_audio_play', { station: stationIndex + 1, sentence: sentenceIndex + 1 })
     playCurrentAudio()
   })
 

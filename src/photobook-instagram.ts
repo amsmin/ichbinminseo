@@ -1,4 +1,5 @@
 import { mapQuad, type Quad } from './photobook-geometry'
+import { trackEvent } from './analytics'
 
 const HANDLE = '@gaeyoeul'
 const FONT = '400 22px Arial, Helvetica, sans-serif'
@@ -42,6 +43,7 @@ export function mountInstagramLink(stage: HTMLElement, projection: string, isAva
   link.hidden = true
   link.addEventListener('click', event => {
     if (!isAvailable()) event.preventDefault()
+    else trackEvent('photobook_instagram_open')
   })
   stage.append(link)
 

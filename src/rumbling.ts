@@ -10,6 +10,7 @@ import { RumblingTrail } from './rumbling-trail'
 import { landscape } from './rumbling-landscape'
 import { ErenConversation } from './rumbling-dialogue'
 import { assetUrl } from './asset-url'
+import { trackEvent } from './analytics'
 import './rumbling.css'
 
 document.documentElement.style.setProperty('--rumbling-font', `url("${assetUrl('/fonts/Pretendard-Bold.woff2')}")`)
@@ -75,7 +76,10 @@ export class RumblingScene {
     this.capture = new RumblingCapture(this.root, face => this.startRumbling(face))
     this.conversation = new ErenConversation(this.root)
     this.root.querySelector('.rumbling-start')!.addEventListener('click', () => {
-      if (this.phase === 'idle' && this.renderer) void this.capture.open()
+      if (this.phase === 'idle' && this.renderer) {
+        trackEvent('rumbling_capture_start')
+        void this.capture.open()
+      }
     })
   }
 
@@ -167,6 +171,7 @@ export class RumblingScene {
     const wallHit = this.raycaster.intersectObjects(walls, false)[0]
     if (wallHit && wallHit.distance < hit.distance) return
     this.conversation.begin(this.titan, this.camera, this.controls)
+    trackEvent('rumbling_dialogue_open')
     this.dirty = true
   }
 
@@ -180,6 +185,7 @@ export class RumblingScene {
 
   private startRumbling(face: HTMLCanvasElement) {
     if (!this.scene || this.phase !== 'idle') return
+    trackEvent('rumbling_face_captured')
     const titan = buildRumblingTitan(R)
     titan.userData.titanKind = '시조의 거인'
     const faceMesh = createTitanFace(face)
@@ -202,6 +208,7 @@ export class RumblingScene {
     this.arrival = new RumblingArrival(R, titan.quaternion)
     this.scene.add(this.arrival.group)
     this.phase = 'rising'; this.elapsed = 0; this.dirty = true
+    trackEvent('rumbling_start')
     const button = this.root.querySelector<HTMLButtonElement>('.rumbling-start')!
     button.disabled = true; button.textContent = '땅울림이 시작됩니다…'
   }
@@ -609,6 +616,7 @@ export class RumblingScene {
         })
         if (this.elapsed >= ARRIVAL_END) {
           this.phase = 'rumbling'
+          trackEvent('rumbling_arrival_complete')
           this.root.querySelector('.rumbling-start')!.textContent = '시조의 거인 · 방향키로 이동'
         }
       } else {

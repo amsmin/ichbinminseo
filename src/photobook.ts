@@ -11,6 +11,10 @@ import { BOOK_PROJECTS, mountProjectLinks } from './photobook-project-links'
 import { createInstagramBack, mountInstagramLink } from './photobook-instagram'
 import { mountFinalFold } from './photobook-final-fold'
 import { createLetterWriter, LETTER_LINES, loadLetterFont } from './photobook-letter'
+import { startExperimentSession, trackEvent } from './analytics'
+
+const photobookSession = startExperimentSession('photobook')
+window.addEventListener('pagehide', () => photobookSession.end('pagehide'), { once: true })
 
 const BACKGROUND_IMAGE = assetUrl('/book2.png')
 const CLOSED_BOOK_IMAGE = assetUrl('/book1.png')
@@ -225,6 +229,7 @@ async function turnPage(direction: 'next' | 'previous') {
   const nextSpread = spread === BACK_COVER && direction === 'next' ? 0
     : Math.max(0, Math.min(BACK_COVER, spread + (direction === 'next' ? 1 : -1)))
   if (nextSpread === spread) return
+  const previousSpread = spread
 
   if (spread === LETTER_SPREAD) letterWriter?.stop()
   if (nextSpread === LETTER_SPREAD) letterWriter?.reset()
@@ -241,6 +246,8 @@ async function turnPage(direction: 'next' | 'previous') {
     isTurning = false
     imageStage.classList.remove('is-turning')
     renderState()
+    trackEvent('photobook_page_turn', { from_page: previousSpread, to_page: spread, direction })
+    if (spread === BACK_COVER) trackEvent('photobook_complete')
     return
   }
   const isCover = spread === 0 || nextSpread === 0
@@ -282,6 +289,8 @@ async function turnPage(direction: 'next' | 'previous') {
   isTurning = false
   imageStage.classList.remove('is-turning')
   renderState()
+  trackEvent('photobook_page_turn', { from_page: previousSpread, to_page: spread, direction })
+  if (spread === BACK_COVER) trackEvent('photobook_complete')
   if (spread === LETTER_SPREAD) letterWriter?.start()
 }
 

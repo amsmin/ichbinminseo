@@ -2,6 +2,7 @@ import './style.css'
 import { ShampooScene } from './shampoo'
 import { GlassesScene } from './glasses'
 import { assetUrl } from './asset-url'
+import { startExperimentSession, trackEvent } from './analytics'
 import type { ForestScene } from './forest'
 import type { RumblingScene } from './rumbling'
 import {
@@ -1115,6 +1116,7 @@ class ShiroScene {
   }
 
   private startBoneFlight(hand: FeedHandPoint, now: number) {
+    trackEvent('shiro_bone_throw')
     this.facing = hand.x < this.x ? 1 : -1
     const mouth = this.mouthPosition()
     const distance = Math.hypot(mouth.x - hand.x, mouth.y - hand.y)
@@ -1158,6 +1160,7 @@ class ShiroScene {
     if (this.boneFlight.deliveredAt === null && now - this.boneFlight.startedAt >= this.boneFlight.duration) {
       this.boneFlight.deliveredAt = now
       this.biteUntil = now + 1050
+      trackEvent('shiro_bone_caught')
     } else if (this.boneFlight.deliveredAt !== null && now - this.boneFlight.deliveredAt > 920) {
       this.boneFlight = null
       this.pauseUntil = now + 320
@@ -1456,7 +1459,10 @@ let waterRenderer: WaterRenderer | null = WaterRenderer.create(waterCanvas)
 let rubberRenderer: RubberFaceRenderer | null = null
 const rippleOverlay = new RippleOverlay(rippleCanvas)
 const waterAudio = new WaterAudioEngine()
-const balloonScene = new BalloonScene(balloonCanvas, (x) => waterAudio.balloonPop(x))
+const balloonScene = new BalloonScene(balloonCanvas, (x) => {
+  trackEvent('balloon_pop')
+  waterAudio.balloonPop(x)
+})
 const shiroScene = new ShiroScene(shiroSceneElement)
 const shampooScene = new ShampooScene(shampooCanvas, video)
 const glassesScene = new GlassesScene(glassesCanvas, video)
@@ -1524,11 +1530,14 @@ let pressStartedAt = 0
 let longPressTriggered = false
 let activeExperience: Experience = 'lemonade'
 let previousExperience: Experience = 'lemonade'
+let experimentSession: ReturnType<typeof startExperimentSession> | null = null
 let resourcesDisposed = false
 let visionGeneration = 0
 let leverPointerId: number | null = null
 let leverStartY = 0
 let leverTriggered = false
+let waterInteractionTracked = false
+let rubberStretchTracked = false
 
 function createLemons() {
   const startingPositions = [
@@ -1584,6 +1593,10 @@ function resetShampooLever() {
 
 function setExperience(experience: Experience) {
   if (experience === activeExperience) return
+  if (experimentSession) {
+    experimentSession.end('switch')
+    trackEvent('experiment_switch', { from_experience: activeExperience, to_experience: experience })
+  }
   if (isRecording) stopRecording()
   stopVisionSession()
   if (experience === 'impine' && activeExperience !== 'impine') previousExperience = activeExperience
@@ -1600,8 +1613,11 @@ function setExperience(experience: Experience) {
   if (activeExperience === 'rumbling') { rumblingLoadGeneration += 1; rumblingScene?.deactivate() }
   rubberWarp = null
   rubberFace = null
+  waterInteractionTracked = false
+  rubberStretchTracked = false
   experienceApp.classList.remove('is-impine-minimized', 'is-impine-maximized')
   activeExperience = experience
+  experimentSession = startExperimentSession(experience)
   const isWaterTouch = experience === 'watertouch'
   const isBalloon = experience === 'balloon'
   const isShiro = experience === 'shiro'
@@ -1851,8 +1867,13 @@ function createJuiceDrop(lemon: Lemon, now: number) {
 function updateCup() {
   const percentage = Math.round(lemonadeFill * 100)
   const cupHeight = cup.clientHeight || 180
-  if (lemonadeFill >= 0.98) strawUnlocked = true
-  if (lemonadeFill <= 0.005) strawUnlocked = false
+  const nextStrawUnlocked = lemonadeFill >= 0.98
+    ? true
+    : lemonadeFill <= 0.005
+      ? false
+      : strawUnlocked
+  if (nextStrawUnlocked && !strawUnlocked) trackEvent('lemonade_ready_to_sip')
+  strawUnlocked = nextStrawUnlocked
   cup.style.setProperty('--fill', `${lemonadeFill}`)
   cup.style.setProperty('--liquid-height', `${13 + Math.max(0, cupHeight - 8) * lemonadeFill}px`)
   cup.style.setProperty('--ice-base', `${(1 - lemonadeFill) * 10}px`)
@@ -1945,6 +1966,7 @@ function updateInteraction(now: number, delta: number) {
     grabbedLemon.squeezed = true
     grabbedLemon.fallVelocity = 5
     grabbedLemon.element.classList.add('is-squeezed')
+    trackEvent('lemonade_lemon_squeezed')
     grabbedLemon = null
   }
 }
@@ -1969,6 +1991,7 @@ function updateDrinking(now: number, delta: number) {
     return
   }
 
+  if (!isDrinking) trackEvent('lemonade_sip_start')
   isDrinking = true
   lemonadeFill = Math.max(0, lemonadeFill - delta * 0.18)
   createSipParticle(now)
@@ -2003,6 +2026,10 @@ function landmarkDistance(a: NormalizedLandmark, b: NormalizedLandmark) {
 function addWaterRipple(x: number, y: number, energy: number, now: number) {
   waterRipples.unshift({ x, y, bornAt: now, energy })
   if (waterRipples.length > MAX_WATER_RIPPLES) waterRipples.length = MAX_WATER_RIPPLES
+  if (activeExperience === 'watertouch' && !waterInteractionTracked) {
+    waterInteractionTracked = true
+    trackEvent('watertouch_touch')
+  }
   waterAudio.splash(x, energy, now)
 }
 
@@ -2217,6 +2244,10 @@ function updateRubberInteraction(now: number) {
         active: true,
         releasedAt: null,
       }
+      if (!rubberStretchTracked) {
+        rubberStretchTracked = true
+        trackEvent('rubber_stretch')
+      }
     } else {
       if (rubberFace && now - rubberFace.seenAt <= RUBBER_FACE_TIMEOUT) {
         const head = rubberHeadCenter(rubberFace.landmarks, window.innerWidth, window.innerHeight)
@@ -2236,6 +2267,7 @@ function updateRubberInteraction(now: number) {
   if (existing?.active) {
     existing.active = false
     existing.releasedAt = now
+    trackEvent('rubber_release')
   }
   if (rubberWarp && rubberWarp.releasedAt !== null && now - rubberWarp.releasedAt > 1250) rubberWarp = null
 }
@@ -3244,6 +3276,7 @@ function takePhoto() {
   if (activeExperience === 'impine') {
     if (!impineRenderer.isLeftFixed && !impineRenderer.isComplete) {
       impineRenderer.captureLeft(impineFacePoints)
+      trackEvent('impine_half_capture', { half: 'left' })
       setImpineState('LEFT CAPTURED')
       captureHint.textContent = 'tap to capture the right half'
       setStatus('Left half captured — take the right half')
@@ -3252,11 +3285,14 @@ function takePhoto() {
     }
     if (impineRenderer.isLeftFixed) {
       impineRenderer.captureRight(impineFacePoints)
+      trackEvent('impine_half_capture', { half: 'right' })
       setImpineState('COMPLETE')
       impineRenderer.copyTo(captureCanvas)
       captureCanvas.toBlob((blob) => {
         if (!blob) return
         downloadBlob(blob, `impine-${new Date().toISOString().replace(/[:.]/g, '-')}.jpg`)
+        trackEvent('camera_photo_saved', { experience: 'impine' })
+        trackEvent('impine_complete')
         setStatus('Photo saved')
         captureHint.textContent = 'tap to start over'
         window.setTimeout(() => setStatus('', false), 1500)
@@ -3302,6 +3338,7 @@ function takePhoto() {
   captureCanvas.toBlob((blob) => {
     if (blob) {
       downloadBlob(blob, `${prefix}-${new Date().toISOString().replace(/[:.]/g, '-')}.jpg`)
+      trackEvent('camera_photo_saved', { experience: prefix })
       setStatus('Photo saved')
       window.setTimeout(() => setStatus('', false), 1500)
     }
@@ -3352,6 +3389,7 @@ async function startRecording() {
     mediaRecorder.onstop = () => {
       const extension = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm'
       downloadBlob(new Blob(recordedChunks, { type: mimeType || 'video/webm' }), `${recordingExperience}-${new Date().toISOString().replace(/[:.]/g, '-')}.${extension}`)
+      trackEvent('camera_recording_saved', { experience: recordingExperience })
       recordingCanvasStream?.getVideoTracks().forEach((track) => track.stop())
       recordingCanvasStream = null
       setStatus('Video saved')
@@ -3359,6 +3397,7 @@ async function startRecording() {
     }
     mediaRecorder.start(1000)
     isRecording = true
+    trackEvent('camera_recording_start', { experience: recordingExperience })
     cameraButton.classList.add('is-recording')
     cameraButton.setAttribute('aria-label', 'Stop video recording')
     captureHint.textContent = 'tap to stop recording'
@@ -3442,6 +3481,7 @@ function onLeverPointerMove(event: PointerEvent) {
   if (pull >= 48 && !leverTriggered) {
     leverTriggered = true
     shampooLever.classList.add('is-pulled')
+    trackEvent('shampoo_rinse')
     shampooScene.rinse()
     shampooScene.setLeverHeld(true)
   }
@@ -3454,6 +3494,7 @@ function onLeverKeyDown(event: KeyboardEvent) {
   leverTriggered = true
   shampooLever.style.setProperty('--lever-pull', '70px')
   shampooLever.classList.add('is-pulled')
+  trackEvent('shampoo_rinse')
   shampooScene.rinse()
   shampooScene.setLeverHeld(true)
 }
@@ -3474,6 +3515,7 @@ const initialExperience = experienceOptions.find((option) => option.dataset.expe
 if (initialExperience && initialExperience !== 'minecraft' && initialExperience !== activeExperience) {
   setExperience(initialExperience as Experience)
 } else {
+  experimentSession = startExperimentSession(activeExperience)
   startVisionSession()
 }
 
@@ -3500,12 +3542,14 @@ experienceOptions.forEach((option) => {
   option.addEventListener('click', () => {
     const experience = option.dataset.experience
     if (experience === 'photobook') {
+      trackEvent('experiment_switch', { from_experience: activeExperience, to_experience: 'photobook' })
       const url = new URL(window.location.href)
       url.searchParams.set('experience', 'photobook')
       window.location.assign(url.href)
       return
     }
     if (experience === 'minecraft') {
+      trackEvent('experiment_switch', { from_experience: activeExperience, to_experience: 'minecraft' })
       const url = new URL(window.location.href)
       url.searchParams.set('experience', activeExperience)
       window.history.replaceState(window.history.state, '', url.href)
@@ -3517,6 +3561,7 @@ experienceOptions.forEach((option) => {
   })
 })
 guestbookButton.addEventListener('click', () => {
+  trackEvent('guestbook_open')
   const url = new URL(window.location.href)
   url.searchParams.delete('experience')
   url.searchParams.set('page', 'guestbook')
@@ -3543,6 +3588,7 @@ function disposeResources() {
   waterRenderer = null
   recordingCanvasStream?.getVideoTracks().forEach((track) => track.stop())
   waterAudio.dispose()
+  experimentSession?.end('pagehide')
 }
 
 window.addEventListener('pagehide', disposeResources)

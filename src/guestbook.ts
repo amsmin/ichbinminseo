@@ -1,5 +1,9 @@
 import { createClient, type RealtimeChannel } from '@supabase/supabase-js'
 import './guestbook.css'
+import { startExperimentSession, trackEvent } from './analytics'
+
+const guestbookSession = startExperimentSession('guestbook')
+window.addEventListener('pagehide', () => guestbookSession.end('pagehide'), { once: true })
 
 type GuestbookEntry = {
   id: string
@@ -154,6 +158,7 @@ async function loadEntries() {
 
   entries = (data ?? []) as GuestbookEntry[]
   renderEntries()
+  trackEvent('guestbook_entries_loaded', { count: entries.length })
   subscribeToNewEntries()
 }
 
@@ -200,6 +205,7 @@ async function submitEntry(event: SubmitEvent) {
   submitButton.innerHTML = '작성하기 <span aria-hidden="true">↗</span>'
 
   if (error) {
+    trackEvent('guestbook_entry_submit', { result: 'error' })
     setStatus('저장하지 못했어요. 잠시 후 다시 시도해 주세요.', 'error')
     console.error('Could not save guestbook entry.', error)
     return
@@ -209,6 +215,7 @@ async function submitEntry(event: SubmitEvent) {
     entries = [data as GuestbookEntry, ...entries].slice(0, 100)
     renderEntries()
   }
+  trackEvent('guestbook_entry_submit', { result: 'success' })
   form.reset()
   count.textContent = '0 / 300'
   setStatus('방명록이 포스트잇으로 붙었어요 ✦', 'success')
@@ -219,6 +226,7 @@ messageInput.addEventListener('input', () => {
 })
 form.addEventListener('submit', (event) => void submitEntry(event))
 homeButton.addEventListener('click', () => {
+  trackEvent('guestbook_home_click')
   const url = new URL(window.location.href)
   url.searchParams.delete('page')
   window.location.assign(url.href)
