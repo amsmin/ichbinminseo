@@ -1872,7 +1872,7 @@ function updateCup() {
     : lemonadeFill <= 0.005
       ? false
       : strawUnlocked
-  if (nextStrawUnlocked && !strawUnlocked) trackEvent('lemonade_ready_to_sip')
+  if (nextStrawUnlocked && !strawUnlocked) trackEvent('lemonade_complete')
   strawUnlocked = nextStrawUnlocked
   cup.style.setProperty('--fill', `${lemonadeFill}`)
   cup.style.setProperty('--liquid-height', `${13 + Math.max(0, cupHeight - 8) * lemonadeFill}px`)
