@@ -1,10 +1,15 @@
-// Keep the original gallery as the homepage. Only an explicit selection opens
-// the camera-only example without initializing the gallery's ML/WebGL scenes.
+// The image-based book is the default homepage. Existing experiments remain
+// available when selected explicitly through their experience query.
 const experience = new URLSearchParams(window.location.search).get('experience')
 const page = new URLSearchParams(window.location.search).get('page')
 
 if (page === 'guestbook') {
   await import('./guestbook')
+} else if (!experience || experience === 'photobook') {
+  await import('./photobook')
+} else if (experience === 'berlin') {
+  document.title = 'Berlin · 베를린 기차역'
+  await import('../berlin/src/main')
 } else if (experience === 'minecraft') {
   const { mountMinecraft } = await import('./minecraft')
   mountMinecraft(document.querySelector<HTMLDivElement>('#app')!)

@@ -24,3 +24,4 @@ grant select, insert on table public.guestbook_entries to anon, authenticated;
 
 -- Realtime 구독을 켭니다. 이미 켜져 있다면 이 줄은 중복 오류가 날 수 있으므로 건너뛰세요.
 alter publication supabase_realtime add table public.guestbook_entries;
+

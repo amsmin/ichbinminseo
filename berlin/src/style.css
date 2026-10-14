@@ -1,0 +1,284 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  color: #000;
+  background: #fff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100svh;
+  background: #fff;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.welcome-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5svh 24px 8svh;
+  background: #fff;
+}
+
+.welcome-image {
+  display: block;
+  width: min(100%, 1068px);
+  height: auto;
+  flex: 0 1 auto;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 448px);
+  margin-top: clamp(10px, 1.2svh, 18px);
+  transform: translateY(-80px);
+}
+
+.password-line {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: min(100%, 240px);
+  height: 28px;
+  padding: 0 14px 3px;
+  border-bottom: 1px solid #000;
+  cursor: text;
+}
+
+.masked-value {
+  display: block;
+  min-width: 0;
+  color: #000;
+  font-size: 16px;
+  line-height: 17px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.typing-caret {
+  display: block;
+  width: 1px;
+  height: 16px;
+  margin: 0 0 1px 3px;
+  background: #000;
+  animation: blink 1s steps(1, end) infinite;
+}
+
+.password-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  opacity: 0;
+  cursor: text;
+}
+
+.enter-button {
+  margin: 15px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #000;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.enter-button:hover,
+.enter-button:focus-visible {
+  color: #000;
+}
+
+.enter-button:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 5px;
+}
+
+@keyframes blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-page {
+    padding: 3svh 20px 6svh;
+  }
+
+  .password-form {
+    margin-top: 18px;
+  }
+
+  .password-line {
+    padding-inline: 10px;
+  }
+
+  .enter-button {
+    font-size: 16px;
+  }
+}
+
+.practice-page {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5svh 24px 8svh;
+  background: #fff;
+}
+
+.practice-image {
+  display: block;
+  width: min(100%, 1068px);
+  height: auto;
+  flex: 0 1 auto;
+}
+
+.practice-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 1100px);
+  margin-top: clamp(8px, 2.4svh, 30px);
+  text-align: center;
+}
+
+.practice-text-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.practice-text {
+  color: #c6c6c6;
+  font-size: clamp(18px, 2vw, 27px);
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.completed-text {
+  color: #000;
+  font-weight: 600;
+}
+
+.typed-incorrect {
+  color: #c62828;
+  font-weight: 400;
+}
+
+.remaining-text {
+  color: #c6c6c6;
+}
+
+.practice-translation {
+  margin: 12px 0 0;
+  color: #b4b4b4;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.audio-button {
+  position: relative;
+  z-index: 3;
+  margin: 16px 0 0;
+  padding: 2px 4px;
+  border: 0;
+  color: #777;
+  background: transparent;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.audio-button:disabled {
+  color: #c8c8c8;
+  cursor: default;
+}
+
+.audio-button:focus-visible {
+  outline: 1px solid #999;
+  outline-offset: 4px;
+}
+
+.practice-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 1.4em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  -webkit-text-fill-color: transparent;
+  font-family: inherit;
+  font-size: clamp(18px, 2vw, 27px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: inherit;
+  text-align: center;
+  cursor: text;
+}
+
+@media (max-width: 600px) {
+  .practice-page {
+    padding: 3svh 20px 6svh;
+  }
+
+  .practice-content {
+    margin-top: 18px;
+  }
+
+  .practice-text {
+    font-size: 17px;
+  }
+
+  .practice-input {
+    font-size: 17px;
+  }
+
+  .practice-translation {
+    font-size: 13px;
+  }
+}

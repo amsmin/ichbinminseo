@@ -1,0 +1,29 @@
+.photo-open-hotspot { position: absolute; top: 0; left: 0; z-index: 10; padding: 0; border: 0; background: transparent; transform-origin: 0 0; cursor: zoom-in; pointer-events: auto; }
+.photo-open-hotspot:focus-visible { outline: 2px solid #080808; outline-offset: 4px; }
+.photo-editor { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; overflow: hidden; color: #080808; font-family: Arial, Helvetica, sans-serif; }
+.photo-editor::backdrop { background: transparent; }
+.photo-camera-rig { position: absolute; inset: 0; transform-origin: 0 0; pointer-events: none; }
+.photo-editor-card { position: absolute; top: 0; left: 0; margin: 0; transform-origin: 0 0; }
+.photo-editor-picture { position: relative; margin: auto; touch-action: none; user-select: none; }
+.photo-editor-picture > img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.photo-editor-caption { margin: 18px 0 0; height: 26px; text-align: center; white-space: nowrap; font: 400 22px / 26px Arial, Helvetica, sans-serif; }
+.photo-editor-picture.is-placing { cursor: crosshair; }
+.flower-sticker { position: absolute; aspect-ratio: 1; padding: 0; border: 0; background: transparent; transform: translate(-50%, -50%); cursor: grab; touch-action: none; }
+.flower-sticker:active { cursor: grabbing; }
+.flower-sticker img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.flower-sticker:focus-visible { outline: 1px dashed #080808; outline-offset: 3px; }
+.flower-remove { position: absolute; width: 14px; height: 14px; padding: 0; border: 1px solid #080808; border-radius: 50%; background: #fff; color: #080808; font: 400 12px / 12px Arial, sans-serif; cursor: pointer; }
+.flower-remove:focus-visible { outline: 1px solid #080808; outline-offset: 2px; }
+.photo-editor-tools { position: absolute; display: grid; justify-items: center; gap: 20px; width: 60px; }
+.photo-flower-tool { width: 56px; height: 56px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.photo-flower-tool img { display: block; width: 100%; height: 100%; }
+.photo-flower-tool[aria-pressed="true"] { outline: 1px dashed #080808; outline-offset: 3px; }
+.photo-flower-tool:disabled { opacity: .35; cursor: default; }
+.photo-editor-done { display: grid; justify-items: center; gap: 7px; cursor: pointer; font-size: 12px; }
+.photo-editor-done input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-editor-check { position: relative; display: block; width: 32px; height: 32px; border: 2px solid #080808; background: transparent; }
+.photo-editor-check svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.photo-editor-check path { fill: none; stroke: #d52323; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.photo-editor-done input:focus-visible + .photo-editor-check { outline: 2px solid #080808; outline-offset: 4px; }
+.photo-editor-hint { position: absolute; bottom: max(20px, env(safe-area-inset-bottom)); left: 16px; right: 16px; margin: 0; font-size: 13px; text-align: center; }
+.photo-editor [hidden], .photo-open-hotspot[hidden] { display: none; }

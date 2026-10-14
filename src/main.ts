@@ -1359,6 +1359,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <button class="experience-option" type="button" data-experience="glasses" aria-pressed="false">안경</button>
       <button class="experience-option" type="button" data-experience="forest" aria-pressed="false">동물의 숲</button>
       <button class="experience-option" type="button" data-experience="rumbling" aria-pressed="false">땅울림</button>
+      <button class="experience-option" type="button" data-experience="photobook" aria-pressed="false">아날로그 포토북</button>
       <button class="experience-option" type="button" data-experience="minecraft" aria-pressed="false">마인크래프트</button>
     </nav>
 
@@ -3498,6 +3499,12 @@ impineWindow.addEventListener('click', (event) => {
 experienceOptions.forEach((option) => {
   option.addEventListener('click', () => {
     const experience = option.dataset.experience
+    if (experience === 'photobook') {
+      const url = new URL(window.location.href)
+      url.searchParams.set('experience', 'photobook')
+      window.location.assign(url.href)
+      return
+    }
     if (experience === 'minecraft') {
       const url = new URL(window.location.href)
       url.searchParams.set('experience', activeExperience)
