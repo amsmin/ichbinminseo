@@ -8,7 +8,7 @@ if (page === 'guestbook') {
 } else if (!experience || experience === 'photobook') {
   await import('./photobook')
 } else if (experience === 'berlin') {
-  document.title = 'Berlin · 베를린 기차역'
+  document.title = 'jaklarn'
   await import('../berlin/src/main')
 } else if (experience === 'minecraft') {
   const { mountMinecraft } = await import('./minecraft')

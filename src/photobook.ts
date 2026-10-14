@@ -109,7 +109,7 @@ function blankPaper() {
   </svg>`
 }
 
-document.title = 'das Buch'
+document.title = 'jaklarn'
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <main class="photobook-app" aria-label="das Buch">
     <p class="time-greeting" lang="de" aria-live="polite" aria-atomic="true"><span id="time-greeting-label"></span></p>

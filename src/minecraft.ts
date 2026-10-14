@@ -21,7 +21,7 @@ function hudWindow(part: 'crosshair' | 'hotbar', label: string) {
 export function mountMinecraft(root: HTMLElement) {
   const minecraftSession = startExperimentSession('minecraft')
   window.addEventListener('pagehide', () => minecraftSession.end('pagehide'), { once: true })
-  document.title = '마인크래프트 · Experiment 17'
+  document.title = 'jaklarn'
   root.innerHTML = `
     <main class="minecraft-camera" aria-label="마인크래프트 카메라">
       <video class="minecraft-video" autoplay muted playsinline aria-label="좌우 반전된 웹캠 영상"></video>
