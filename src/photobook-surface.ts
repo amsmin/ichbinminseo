@@ -20,6 +20,7 @@ export class FlexiblePaper {
   private backTexture!: WebGLTexture
   private front?: HTMLCanvasElement
   private back?: HTMLCanvasElement
+  private readonly texturePatch = document.createElement('canvas')
 
   constructor(host: HTMLDivElement, projection: string, depthOffset = 0) {
     this.host = host
@@ -126,6 +127,29 @@ export class FlexiblePaper {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, artwork)
+    }
+    this.draw()
+  }
+
+  /** Refresh only the newly written ink; the paper mesh and reverse stay put. */
+  updateFrontArtwork(front: HTMLCanvasElement, dirty?: { x: number; y: number; width: number; height: number }) {
+    this.front = front
+    const gl = this.gl
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, this.frontTexture)
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
+    if (dirty) {
+      const x = Math.max(0, Math.floor(dirty.x))
+      const y = Math.max(0, Math.floor(dirty.y))
+      const right = Math.min(front.width, Math.ceil(dirty.x + dirty.width))
+      const bottom = Math.min(front.height, Math.ceil(dirty.y + dirty.height))
+      if (right <= x || bottom <= y) return
+      this.texturePatch.width = right - x
+      this.texturePatch.height = bottom - y
+      this.texturePatch.getContext('2d')!.drawImage(front, x, y, right - x, bottom - y, 0, 0, right - x, bottom - y)
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, gl.RGBA, gl.UNSIGNED_BYTE, this.texturePatch)
+    } else {
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, front)
     }
     this.draw()
   }

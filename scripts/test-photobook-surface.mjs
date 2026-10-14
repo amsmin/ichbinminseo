@@ -103,7 +103,7 @@ try {
     }
     assert.ok(ready, 'Book did not initialize')
     assert.equal(await evaluate('document.querySelectorAll(".paper-strip").length'), 0, 'DOM slices reintroduced')
-    assert.equal(await evaluate('document.querySelectorAll(".paper-surface").length'), 13)
+    assert.equal(await evaluate('document.querySelectorAll(".paper-surface").length'), 14)
     await begin('next'); await finish()
     await evaluate(`(async()=>{
       const {createPaperMaterials}=await import('/src/photobook-material.ts');

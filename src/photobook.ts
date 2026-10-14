@@ -10,6 +10,7 @@ import { FLOWER_URL, readFlower } from './photobook-photo'
 import { BOOK_PROJECTS, mountProjectLinks } from './photobook-project-links'
 import { createInstagramBack, mountInstagramLink } from './photobook-instagram'
 import { mountFinalFold } from './photobook-final-fold'
+import { createLetterWriter, LETTER_LINES, loadLetterFont } from './photobook-letter'
 
 const BACKGROUND_IMAGE = assetUrl('/book2.png')
 const CLOSED_BOOK_IMAGE = assetUrl('/book1.png')
@@ -33,8 +34,10 @@ function playPageTurnSound() {
 
 window.addEventListener('pagehide', () => { pageTurnSound.pause() })
 
-const PROJECT_PAGE_TITLES = ['Ich mag ...', ...BOOK_PROJECTS.map(project => project.title), 'Tschüss!♥️']
+const LETTER_PAGE_TITLE = '워크숍 편지'
+const PROJECT_PAGE_TITLES = ['Ich mag ...', ...BOOK_PROJECTS.map(project => project.title), LETTER_PAGE_TITLE, 'Tschüss!♥️']
 const LAST_PAGE = 3 + PROJECT_PAGE_TITLES.length
+const LETTER_SPREAD = LAST_PAGE - 1
 const BACK_COVER = LAST_PAGE + 1
 const RECT: Quad = [[0, 0], [700, 0], [700, 600], [0, 600]]
 
@@ -178,6 +181,7 @@ let photoEditor: ReturnType<typeof mountPhotoEditor> | undefined
 let projectLinks: ReturnType<typeof mountProjectLinks> | undefined
 let instagramLink: ReturnType<typeof mountInstagramLink> | undefined
 let bookEnding: ReturnType<typeof mountFinalFold> | undefined
+let letterWriter: ReturnType<typeof createLetterWriter> | undefined
 
 function renderState() {
   imageStage.dataset.spread = String(spread)
@@ -208,6 +212,7 @@ function renderState() {
     : spread === 1 ? 'Ich habe diese Projekte gemacht.라고 적힌 펼쳐진 책'
     : spread === 2 ? 'Ich mache, was ich machen möchte.라고 적힌 펼쳐진 책'
     : spread === 3 ? '민서의 사진과 Und das bin ich :) 문구가 있는 펼쳐진 책'
+    : spread === LETTER_SPREAD ? `워크숍을 마무리하는 손글씨 편지: ${LETTER_LINES.join(' ')}`
     : `${PROJECT_PAGE_TITLES[spread - 4]} 문구가 있는 펼쳐진 책, ${spread}번째 페이지`)
   status.textContent = spread === BACK_COVER ? '책의 뒷표지입니다.' : spread === 0 ? '책이 닫혀 있습니다.' : `${spread}번째 페이지`
   photoEditor?.updateAvailability()
@@ -220,6 +225,9 @@ async function turnPage(direction: 'next' | 'previous') {
   const nextSpread = spread === BACK_COVER && direction === 'next' ? 0
     : Math.max(0, Math.min(BACK_COVER, spread + (direction === 'next' ? 1 : -1)))
   if (nextSpread === spread) return
+
+  if (spread === LETTER_SPREAD) letterWriter?.stop()
+  if (nextSpread === LETTER_SPREAD) letterWriter?.reset()
 
   isTurning = true
   renderState()
@@ -274,6 +282,7 @@ async function turnPage(direction: 'next' | 'previous') {
   isTurning = false
   imageStage.classList.remove('is-turning')
   renderState()
+  if (spread === LETTER_SPREAD) letterWriter?.start()
 }
 
 previousButton.addEventListener('click', () => { void turnPage('previous') })
@@ -293,6 +302,9 @@ void Promise.all([BACKGROUND_IMAGE, CLOSED_BOOK_IMAGE, OPEN_BOOK_IMAGE, SECOND_P
 })).then(async images => {
   extendBackground(images[0], imageStage)
   flexiblePages.push(...pages.map(page => new FlexiblePaper(page, bookProjection)))
+  await loadLetterFont().catch(() => {
+    // A missing local font must not prevent the rest of the book from loading.
+  })
   const materials = await createPaperMaterials(images[2], PAGE_QUAD, paperRect)
   // Reuse the supplied lettering on sheet two, while retaining the existing
   // paper material, mesh, and blank reverse side on every sheet.
@@ -303,12 +315,14 @@ void Promise.all([BACKGROUND_IMAGE, CLOSED_BOOK_IMAGE, OPEN_BOOK_IMAGE, SECOND_P
   const flowerPosition = readFlower(images[4])
   const thirdPage = createPhotoPage(materials.back, images[4], { image: images[5], position: flowerPosition })
   const pageFronts = [materials.front, secondPage.front, thirdPage,
-    ...PROJECT_PAGE_TITLES.map(title => createTextPage(materials.back, title))]
+    ...PROJECT_PAGE_TITLES.map(title => title === LETTER_PAGE_TITLE
+      ? materials.back : createTextPage(materials.back, title))]
   const instagramBack = createInstagramBack(materials.back)
   flexiblePages.forEach((page, index) => page.setArtwork(
     pageFronts[index],
     index === 1 ? instagramBack : materials.back,
   ))
+  letterWriter = createLetterWriter(materials.back, flexiblePages[LETTER_SPREAD - 1])
   photoEditor = mountPhotoEditor({
     photo: images[4], stage: imageStage, projection: bookProjection,
     initialPosition: flowerPosition,
@@ -334,6 +348,7 @@ void Promise.all([BACKGROUND_IMAGE, CLOSED_BOOK_IMAGE, OPEN_BOOK_IMAGE, SECOND_P
   }
   ready = true
   renderState()
+  if (spread === LETTER_SPREAD) letterWriter.start()
 }).catch(error => {
   imageStage.setAttribute('aria-busy', 'false')
   status.textContent = error instanceof Error && error.message.includes('WebGL')
